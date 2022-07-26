@@ -5,6 +5,7 @@ import { initializeApp } from "firebase/app";
 import {GoogleAuthProvider} from 'firebase/auth';
 import { getFirestore } from "firebase/firestore";
 import 'normalize.css';
+import './initialize.css';
 
 const firebaseConfig = {
   apiKey: "AIzaSyC8T3tt_11SSH8IWpTrQH8lvR_zitcDgoM",

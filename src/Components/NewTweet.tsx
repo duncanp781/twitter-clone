@@ -11,9 +11,11 @@ export default function NewTweet({ submit }: Props) {
     <Box>
       <form onSubmit={(e) => {
         e.preventDefault();
-        const formData = new FormData(e.target as HTMLFormElement)
+        const form = e.target as HTMLFormElement
+        const formData = new FormData(form)
         const text = formData.get('tweet_content') as string;
         submit(text);
+        form.reset();
       }}
       >
         <textarea cols={45} rows={5} name='tweet_content'>

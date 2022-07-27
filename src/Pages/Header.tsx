@@ -1,7 +1,11 @@
 import React, { useContext } from "react";
 import { UserContext } from "../App";
 import { Button } from "../Components/Styled/Button.styled";
-import { HeaderStyled, Logo, UserInfoStyled } from "../Components/Styled/Header.styled";
+import {
+  HeaderStyled,
+  Logo,
+  UserInfoStyled,
+} from "../Components/Styled/Header.styled";
 import { UserAt, UserName } from "../Components/Styled/Tweet.styled";
 
 type Props = {
@@ -11,14 +15,16 @@ type Props = {
 };
 
 function Header({ signIn, signOut, hasUser }: Props) {
-  const user = useContext(UserContext)
+  const user = useContext(UserContext);
   return (
     <HeaderStyled>
       <Logo>Twitter</Logo>
-      <div style = {{
-        display: 'flex',
-        gap: '8px',
-      }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+        }}
+      >
         <UserInfoStyled>
           <UserName>{user.userName}</UserName>
           <UserAt>@{user.userAt}</UserAt>

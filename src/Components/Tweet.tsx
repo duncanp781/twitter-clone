@@ -4,14 +4,14 @@ import {Box} from './Styled/Box.styled'
 type Props = {
   userName: string,
   userAt: string,
-  tweetText: string,
+  tweetContent: string,
 }
 
-function Tweet({userName, userAt, tweetText}: Props) {
+function Tweet({userName, userAt, tweetContent}: Props) {
   return (
     <Box>
       <div>@{userAt} {userName}</div>
-      <div>{tweetText}</div>
+      <div>{tweetContent}</div>
     </Box>
   )
 }

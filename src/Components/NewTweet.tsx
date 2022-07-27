@@ -16,7 +16,7 @@ export default function NewTweet({ submit }: Props) {
         submit(text);
       }}
       >
-        <textarea cols={45} rows={5} name = 'tweet_content'>
+        <textarea cols={45} rows={5} name='tweet_content'>
         </textarea>
         <Button>Tweet</Button>
       </form>

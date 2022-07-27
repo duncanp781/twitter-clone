@@ -1,17 +1,16 @@
 import React from 'react'
+import { TweetInfo } from '../Pages/Feed'
 import {Box} from './Styled/Box.styled'
 
 type Props = {
-  userName: string,
-  userAt: string,
-  tweetContent: string,
+  tweetInfo: TweetInfo
 }
 
-function Tweet({userName, userAt, tweetContent}: Props) {
+function Tweet({tweetInfo}: Props) {
   return (
     <Box>
-      <div>@{userAt} {userName}</div>
-      <div>{tweetContent}</div>
+      <div>@{tweetInfo.userAt} {tweetInfo.userName}</div>
+      <div>{tweetInfo.tweetContent}</div>
     </Box>
   )
 }

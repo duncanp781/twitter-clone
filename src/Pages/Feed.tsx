@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Tweet from '../Components/Tweet';
 import { Page } from '../Components/Styled/Page.styled';
 import uniqid from 'uniqid';
-import { addDoc, collection, serverTimestamp, query, orderBy, limit, getDocs, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, query, orderBy, limit, getDocs,  } from 'firebase/firestore';
 import NewTweet from '../Components/NewTweet';
 import { DBContext, UserContext } from '../App';
 import {format} from 'date-fns';

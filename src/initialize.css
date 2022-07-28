@@ -11,3 +11,7 @@ html {
          -moz-box-sizing: inherit;
               box-sizing: inherit;
   }
+
+  html, body, #root{
+    height: 100%;
+  }

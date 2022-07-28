@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useNavigate } from "react-router";
 import { UserContext } from "../App";
 import { Button } from "../Components/Styled/Button.styled";
 import {
@@ -15,6 +16,7 @@ type Props = {
 };
 
 function Header({ signIn, signOut, hasUser }: Props) {
+  const navigate = useNavigate();
   const user = useContext(UserContext);
   return (
     <HeaderStyled>
@@ -32,7 +34,13 @@ function Header({ signIn, signOut, hasUser }: Props) {
         {hasUser ? (
           <Button onClick={signOut}>Sign out</Button>
         ) : (
-          <Button onClick={signIn}>Sign in with google</Button>
+          <Button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Sign in
+          </Button>
         )}
       </div>
     </HeaderStyled>

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { useState } from "react";
 import RouteSwitch from "./RouteSwitch";
 import { initializeApp } from "firebase/app";
 import {
@@ -7,17 +7,11 @@ import {
   GoogleAuthProvider,
   signOut,
 } from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  doc,
-  setDoc,
-} from "firebase/firestore";
-import { Button } from "./Components/Styled/Button.styled";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import "normalize.css";
 import "./initialize.css";
 import Header from "./Pages/Header";
+import { BrowserRouter } from "react-router-dom";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC8T3tt_11SSH8IWpTrQH8lvR_zitcDgoM",
@@ -48,10 +42,27 @@ type User = {
 };
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState({
+  const [showHeader, setShowHeader] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<User>({
     userName: "guest",
     userAt: "test",
     uId: "1",
+  });
+
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      getUserFromDB(user.uid).then((userObj) => {
+        if (userObj) {
+          setCurrentUser(userObj);
+        }
+      });
+    } else {
+      setCurrentUser({
+        userName: "guest",
+        userAt: "test",
+        uId: "1",
+      });
+    }
   });
 
   const addUserToDB = async (user: User) => {
@@ -66,10 +77,24 @@ export default function App() {
     }
   };
 
-  const signInUser = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        let user = result.user;
+  const getUserFromDB = async (uId: string): Promise<User | undefined> => {
+    const userDocRef = doc(db, "users/" + uId);
+    const userDoc = await getDoc(userDocRef);
+    return userDoc.data() as User | undefined;
+  };
+
+  //Sign in the user with a pop up. If the user isn't in the DB, add it to the DB
+  //Returns a boolean representing whether the signed in user was new, or null if there was an error
+  const signInUser = async (): Promise<boolean | null> => {
+    try {
+      let result = await signInWithPopup(auth, provider);
+
+      let user = result.user;
+      let newUser = await getUserFromDB(user.uid);
+      if (!!newUser) {
+        setCurrentUser(newUser);
+        return false;
+      } else {
         let newUser: User = {
           userName: user.displayName ? user.displayName : "no name",
           userAt: "test",
@@ -77,27 +102,20 @@ export default function App() {
         };
         setCurrentUser(newUser);
         addUserToDB(newUser);
-      })
-      .catch((error) => {
-        console.error("user sign in failed with error", error);
-      });
+        return true;
+      }
+    } catch (error) {
+      console.error("user sign in failed with error", error);
+      return null;
+    }
   };
 
   const signOutUser = () => {
-    console.log("signging out user");
-    signOut(auth)
-      .then(() =>
-        setCurrentUser({
-          userName: "guest",
-          userAt: "test",
-          uId: "1",
-        })
-      )
-      .catch((error) => console.error("error signing out, ", error));
+    signOut(auth).catch((error) => console.error("error signing out, ", error));
   };
 
   return (
-    <div>
+    <div style={{ height: "100%" }}>
       <UserContext.Provider
         value={
           currentUser
@@ -109,14 +127,18 @@ export default function App() {
               }
         }
       >
-        <Header
-          signIn={signInUser}
-          signOut={signOutUser}
-          hasUser={currentUser.uId !== "1"}
-        />
+        <BrowserRouter>
+          {showHeader && (
+            <Header
+              signIn={signInUser}
+              signOut={signOutUser}
+              hasUser={currentUser.uId !== "1"}
+            />
+          )}
 
-        <RouteSwitch />
-      </UserContext.Provider>{" "}
+          <RouteSwitch setShowHeader={setShowHeader} signInUser={signInUser} />
+        </BrowserRouter>
+      </UserContext.Provider>
     </div>
   );
 }

@@ -5,15 +5,15 @@ import { Logo } from "../Components/Styled/Header.styled";
 import { useNavigate } from "react-router-dom";
 import twitterLogoScreen from "../img/twitter-cyber-logo.webp";
 import TextInput from "../Components/TextInput";
-import { User, UserContext } from "../App";
+import { TriggerUserUpdate, UserContext } from "../App";
 import {
   addUserToDB,
-  getUserFromDB,
   signInUser,
 } from "../Utility/FirebaseFunctions";
 
 export default function LogIn() {
   const user = useContext(UserContext);
+  const triggerUpdate = useContext(TriggerUserUpdate);
   const [showAddInfo, setShowAddInfo] = useState(false);
   const navigate = useNavigate();
 
@@ -74,6 +74,8 @@ export default function LogIn() {
                 userAt: userAtInput.value,
               });
               form.reset();
+              triggerUpdate();
+              navigate('/feed');
             }}
           >
             <TextInput id="userName" text="Enter your username:" />

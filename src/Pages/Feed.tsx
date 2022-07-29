@@ -2,28 +2,16 @@ import React, { useContext, useEffect, useState } from "react";
 import Tweet from "../Components/Tweet";
 import { Page } from "../Components/Styled/Page.styled";
 import uniqid from "uniqid";
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  query,
-  orderBy,
-  limit,
-  getDocs,
-} from "firebase/firestore";
 import NewTweet from "../Components/NewTweet";
-import { UserContext } from "../App";
-import { format } from "date-fns";
+import { User, UserContext } from "../App";
 import { createTweet, getNTweets } from "../Utility/FirebaseFunctions";
 
 export type TweetInfo = {
-  userName: string;
-  userAt: string;
+  user: User;
   tweetContent: string;
   time: string;
+  id: string;
 };
-
-//Get the most recent number tweets
 
 function Feed() {
   const user = useContext(UserContext);
@@ -38,16 +26,26 @@ function Feed() {
     tweetsToDisplay.length === 0 && initTweets();
   }, [tweetsToDisplay]);
 
+  const removeTweetFromFeed = (id: string) => {
+    setTweetsToDisplay(tweetsToDisplay.filter((tweet) => tweet.id !== id));
+  };
+
   return (
     <Page>
       <NewTweet
-        submit={(tweetContent: string) => {
-          let newTweet = createTweet(user, tweetContent);
+        submit={async (tweetContent: string) => {
+          let newTweet = await createTweet(user, tweetContent);
           setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
         }}
       />
       {tweetsToDisplay.map((tweet) => {
-        return <Tweet tweetInfo={tweet} key={uniqid()} />;
+        return (
+          <Tweet
+            tweetInfo={tweet}
+            removeTweetFromFeed={removeTweetFromFeed}
+            key={uniqid()}
+          />
+        );
       })}
     </Page>
   );

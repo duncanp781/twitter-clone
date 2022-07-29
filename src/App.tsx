@@ -8,16 +8,16 @@ import {
   addUserToDB,
   auth,
   getUserFromDB,
-  signInUser,
   signOutUser,
 } from "./Utility/FirebaseFunctions";
-import { getAuth } from "firebase/auth";
 
 export const UserContext = React.createContext({
   userName: "guest",
   userAt: "test",
   uId: "1",
 });
+
+export const TriggerUserUpdate = React.createContext(() => {});
 
 export type User = {
   userName: string;
@@ -32,16 +32,22 @@ export default function App() {
     userAt: "test",
     uId: "1",
   });
+
+  const updateUser = async () => {
+    let realUser = await getUserFromDB(currentUser.uId);
+    if (realUser && realUser !== currentUser) {
+      setCurrentUser(realUser);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        //If there is an account signed in, check if it is an existing user.
+        //If not, add unknown information
         getUserFromDB(user.uid).then((userObj) => {
           if (userObj) {
             setCurrentUser(userObj);
-            console.log(
-              "setting user context from auth state change, user is "
-            );
-            console.log(userObj);
           } else {
             let unknownUser: User = {
               uId: user.uid,
@@ -53,13 +59,12 @@ export default function App() {
           }
         });
       } else {
+        //If not signed in add guest information
         setCurrentUser({
           userName: "guest",
           userAt: "test",
           uId: "1",
         });
-        console.log("setting user context from auth state change, user is ");
-        console.log("the default user");
       }
 
       return unsubscribe;
@@ -68,25 +73,26 @@ export default function App() {
 
   return (
     <div style={{ height: "100%" }}>
-      <UserContext.Provider
-        value={
-          currentUser
-            ? currentUser
-            : {
-                userName: "guest",
-                userAt: "test",
-                uId: "1",
-              }
-        }
-      >
-        <BrowserRouter>
-          {showHeader && (
-            <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} />
-          )}
-
-          <RouteSwitch setShowHeader={setShowHeader} />
-        </BrowserRouter>
-      </UserContext.Provider>
+      <TriggerUserUpdate.Provider value={updateUser}>
+        <UserContext.Provider
+          value={
+            currentUser
+              ? currentUser
+              : {
+                  userName: "guest",
+                  userAt: "test",
+                  uId: "1",
+                }
+          }
+        >
+          <BrowserRouter>
+            {showHeader && (
+              <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} />
+            )}
+            <RouteSwitch setShowHeader={setShowHeader} />
+          </BrowserRouter>
+        </UserContext.Provider>
+      </TriggerUserUpdate.Provider>
     </div>
   );
 }

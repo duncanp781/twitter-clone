@@ -1,31 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RouteSwitch from "./RouteSwitch";
-import { initializeApp } from "firebase/app";
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-} from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 import "normalize.css";
 import "./initialize.css";
 import Header from "./Pages/Header";
 import { BrowserRouter } from "react-router-dom";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC8T3tt_11SSH8IWpTrQH8lvR_zitcDgoM",
-  authDomain: "twitter-clone-f9ccd.firebaseapp.com",
-  projectId: "twitter-clone-f9ccd",
-  storageBucket: "twitter-clone-f9ccd.appspot.com",
-  messagingSenderId: "713938873458",
-  appId: "1:713938873458:web:3069ffbbf29d256911e6eb",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth();
-const provider = new GoogleAuthProvider();
+import {
+  addUserToDB,
+  auth,
+  getUserFromDB,
+  signInUser,
+  signOutUser,
+} from "./Utility/FirebaseFunctions";
+import { getAuth } from "firebase/auth";
 
 export const UserContext = React.createContext({
   userName: "guest",
@@ -33,9 +19,7 @@ export const UserContext = React.createContext({
   uId: "1",
 });
 
-export const DBContext = React.createContext(db);
-
-type User = {
+export type User = {
   userName: string;
   userAt: string;
   uId: string;
@@ -48,71 +32,39 @@ export default function App() {
     userAt: "test",
     uId: "1",
   });
-
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      getUserFromDB(user.uid).then((userObj) => {
-        if (userObj) {
-          setCurrentUser(userObj);
-        }
-      });
-    } else {
-      setCurrentUser({
-        userName: "guest",
-        userAt: "test",
-        uId: "1",
-      });
-    }
-  });
-
-  const addUserToDB = async (user: User) => {
-    try {
-      const userDoc = doc(db, "users/" + user.uId);
-      setDoc(userDoc, {
-        userName: user.userName,
-        userAt: user.userAt,
-      });
-    } catch (e) {
-      console.error("failed to add user to database with error: ", e);
-    }
-  };
-
-  const getUserFromDB = async (uId: string): Promise<User | undefined> => {
-    const userDocRef = doc(db, "users/" + uId);
-    const userDoc = await getDoc(userDocRef);
-    return userDoc.data() as User | undefined;
-  };
-
-  //Sign in the user with a pop up. If the user isn't in the DB, add it to the DB
-  //Returns a boolean representing whether the signed in user was new, or null if there was an error
-  const signInUser = async (): Promise<boolean | null> => {
-    try {
-      let result = await signInWithPopup(auth, provider);
-
-      let user = result.user;
-      let newUser = await getUserFromDB(user.uid);
-      if (!!newUser) {
-        setCurrentUser(newUser);
-        return false;
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        getUserFromDB(user.uid).then((userObj) => {
+          if (userObj) {
+            setCurrentUser(userObj);
+            console.log(
+              "setting user context from auth state change, user is "
+            );
+            console.log(userObj);
+          } else {
+            let unknownUser: User = {
+              uId: user.uid,
+              userName: "unknown",
+              userAt: "unknown",
+            };
+            addUserToDB(unknownUser);
+            setCurrentUser(unknownUser);
+          }
+        });
       } else {
-        let newUser: User = {
-          userName: user.displayName ? user.displayName : "no name",
+        setCurrentUser({
+          userName: "guest",
           userAt: "test",
-          uId: user.uid,
-        };
-        setCurrentUser(newUser);
-        addUserToDB(newUser);
-        return true;
+          uId: "1",
+        });
+        console.log("setting user context from auth state change, user is ");
+        console.log("the default user");
       }
-    } catch (error) {
-      console.error("user sign in failed with error", error);
-      return null;
-    }
-  };
 
-  const signOutUser = () => {
-    signOut(auth).catch((error) => console.error("error signing out, ", error));
-  };
+      return unsubscribe;
+    });
+  }, []);
 
   return (
     <div style={{ height: "100%" }}>
@@ -129,14 +81,10 @@ export default function App() {
       >
         <BrowserRouter>
           {showHeader && (
-            <Header
-              signIn={signInUser}
-              signOut={signOutUser}
-              hasUser={currentUser.uId !== "1"}
-            />
+            <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} />
           )}
 
-          <RouteSwitch setShowHeader={setShowHeader} signInUser={signInUser} />
+          <RouteSwitch setShowHeader={setShowHeader} />
         </BrowserRouter>
       </UserContext.Provider>
     </div>

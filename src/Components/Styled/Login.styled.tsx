@@ -1,12 +1,11 @@
-import styled from 'styled-components';
-
+import styled from "styled-components";
 
 export const TwoCol = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
   height: 100%;
-`
+`;
 
 export const ColSide = styled.div`
   display: flex;
@@ -15,9 +14,9 @@ export const ColSide = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-`
+`;
 
 export const Subtitle = styled.span`
-font-weight: bold;
-font-size: 1.4rem;
-`
+  font-weight: bold;
+  font-size: 1.4rem;
+`;

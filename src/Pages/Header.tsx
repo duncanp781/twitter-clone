@@ -10,12 +10,11 @@ import {
 import { UserAt, UserName } from "../Components/Styled/Tweet.styled";
 
 type Props = {
-  signIn: () => void;
   signOut: () => void;
   hasUser: boolean;
 };
 
-function Header({ signIn, signOut, hasUser }: Props) {
+function Header({signOut, hasUser }: Props) {
   const navigate = useNavigate();
   const user = useContext(UserContext);
   return (

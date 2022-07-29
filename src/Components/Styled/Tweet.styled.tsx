@@ -17,6 +17,12 @@ export const TweetHead = styled.div`
   text-align: right;
   gap: 8px;
 `
+export const TweetField = styled.textarea`
+min-height: 6rem;
+height: 100%;
+width: 100%;
+resize: none;
+`
 
 
 export {}

@@ -1,23 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { TwoCol, ColSide, Subtitle } from "../Components/Styled/Login.styled";
 import { Button } from "../Components/Styled/Button.styled";
 import { Logo } from "../Components/Styled/Header.styled";
 import { useNavigate } from "react-router-dom";
+import twitterLogoScreen from "../img/twitter-cyber-logo.webp";
+import TextInput from "../Components/TextInput";
+import { User, UserContext } from "../App";
+import {
+  addUserToDB,
+  getUserFromDB,
+  signInUser,
+} from "../Utility/FirebaseFunctions";
 
-type Props = {
-  signInUser: () => Promise<boolean | null>;
-};
-
-export default function LogIn({ signInUser }: Props) {
+export default function LogIn() {
+  const user = useContext(UserContext);
   const [showAddInfo, setShowAddInfo] = useState(false);
   const navigate = useNavigate();
 
   const promptSignUp = async () => {
-    const res = await signInUser();
-    if (res === false) {
-      navigate('/feed');
-    } else if (res === true) {
-      setShowAddInfo(true);
+    try {
+      const isNewUser = await signInUser();
+      if (!isNewUser) {
+        navigate("/feed");
+        console.log("user exists, navigating to feed");
+      } else {
+        console.log("user doesnt exist, showing new user form");
+        setShowAddInfo(true);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -25,11 +36,56 @@ export default function LogIn({ signInUser }: Props) {
     <TwoCol>
       <ColSide>
         <Logo>Twitter Clone</Logo>
+        <img
+          src={twitterLogoScreen}
+          style={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+          }}
+          alt="Twitter logo"
+        />
       </ColSide>
       <ColSide>
         <Subtitle>See What's Happening</Subtitle>
-        <Button onClick={promptSignUp}>Sign in with google</Button>
-        <Button onClick = {() => navigate('/feed')}>Continue as Guest</Button>
+        {showAddInfo ? (
+          <form
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.target as HTMLFormElement;
+              const userNameInput = form.elements.namedItem(
+                "userName"
+              ) as HTMLInputElement;
+              const userAtInput = form.elements.namedItem(
+                "userAt"
+              ) as HTMLInputElement;
+              console.log('adding this user to the db:',{
+                uId: user.uId,
+                userName: userNameInput.value,
+                userAt: userAtInput.value,
+              })
+              addUserToDB({
+                uId: user.uId,
+                userName: userNameInput.value,
+                userAt: userAtInput.value,
+              });
+              form.reset();
+            }}
+          >
+            <TextInput id="userName" text="Enter your username:" />
+            <TextInput id="userAt" text="Enter your at:" />
+            <Button>Submit</Button>
+          </form>
+        ) : (
+          <>
+            <Button onClick={promptSignUp}>Sign in with google</Button>
+            <Button onClick={() => navigate("/feed")}>Continue as Guest</Button>
+          </>
+        )}
       </ColSide>
     </TwoCol>
   );

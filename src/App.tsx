@@ -11,7 +11,7 @@ import {
   signOutUser,
 } from "./Utility/FirebaseFunctions";
 
-export const UserContext = React.createContext({
+export const UserContext = React.createContext<User>({
   userName: "guest",
   userAt: "test",
   uId: "1",
@@ -23,7 +23,13 @@ export type User = {
   userName: string;
   userAt: string;
   uId: string;
+  info?: UserDetails
 };
+
+export type UserDetails = {
+  bio: string,
+  website: string,
+}
 
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
@@ -42,6 +48,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log('auth state changed');
       if (user) {
         //If there is an account signed in, check if it is an existing user.
         //If not, add unknown information

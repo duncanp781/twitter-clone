@@ -21,6 +21,7 @@ import {
   limit,
   getDocs,
   deleteDoc,
+  where,
 } from "firebase/firestore";
 import { User as DBUser } from "../App";
 import { TweetInfo } from "../Pages/Feed";
@@ -114,3 +115,19 @@ export const getNTweets = async (number: number): Promise<TweetInfo[]> => {
   });
   return out;
 };
+
+
+export const getNUserTweets = async (uId: string, number: number): Promise<TweetInfo[]> => {
+  let out: TweetInfo[] = [];
+  const tweetsRef = collection(db, "tweets");
+  const tweetsQuery = query(tweetsRef, where('user.uId', '==', uId),orderBy("time", "desc"), limit(number));
+  const tweetsSnapshot = await getDocs(tweetsQuery);
+  tweetsSnapshot.forEach((doc) => {
+    let newTime = (doc.data().time) ? format(doc.data().time.toDate(), "MM/dd/yyyy") : 'Just now';
+    out.push({
+      ...doc.data(),
+      time: newTime,
+    } as TweetInfo);
+  });
+  return out;
+}

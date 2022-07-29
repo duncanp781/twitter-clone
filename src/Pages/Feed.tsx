@@ -5,6 +5,8 @@ import uniqid from "uniqid";
 import NewTweet from "../Components/NewTweet";
 import { User, UserContext } from "../App";
 import { createTweet, getNTweets } from "../Utility/FirebaseFunctions";
+import { FeedStyled } from "../Components/Styled/Feed.styled";
+import TweetDisplay from "../Components/TweetDisplay";
 
 export type TweetInfo = {
   user: User;
@@ -32,21 +34,15 @@ function Feed() {
 
   return (
     <Page>
-      <NewTweet
-        submit={async (tweetContent: string) => {
-          let newTweet = await createTweet(user, tweetContent);
-          setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
-        }}
-      />
-      {tweetsToDisplay.map((tweet) => {
-        return (
-          <Tweet
-            tweetInfo={tweet}
-            removeTweetFromFeed={removeTweetFromFeed}
-            key={uniqid()}
-          />
-        );
-      })}
+      <FeedStyled>
+        <NewTweet
+          submit={async (tweetContent: string) => {
+            let newTweet = await createTweet(user, tweetContent);
+            setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
+          }}
+        />
+        <TweetDisplay toDisplay = {tweetsToDisplay} remove = {removeTweetFromFeed}/>
+      </FeedStyled>
     </Page>
   );
 }

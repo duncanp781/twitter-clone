@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { User, UserContext } from "./App";
 import Feed from "./Pages/Feed";
 import LogIn from "./Pages/LogIn";
+import Profile from "./Pages/Profile";
 
 type Props = {
   setShowHeader: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,6 +33,7 @@ function RouteSwitch({ setShowHeader }: Props) {
       />
       <Route path="/login" element={<LogIn />} />
       <Route path="/feed" element={<Feed />} />
+      <Route path ='/user/:uId' element = {<Profile/>}/>
     </Routes>
   );
 }

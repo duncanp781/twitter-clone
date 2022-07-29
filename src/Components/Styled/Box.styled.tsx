@@ -1,11 +1,29 @@
+import React from 'react';
 import styled from 'styled-components';
-import React from 'react'
+import { lightTheme } from './Themes';
 
-export const Box = styled.div`
-  border: 2px solid black;
+type Props  = {
+  hoverable? : boolean,
+}
+
+export const Box = styled.div<Props>`
+  background-color: ${lightTheme.main};
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-radius: 4px;
+  &:hover{
+    background-color: ${(props) => props.hoverable ? lightTheme.secondary : lightTheme.main };
+  }
+`
+
+export const TweetStyled = styled.div<Props>`
+background-color: ${lightTheme.main};
+padding: 16px;
+display: grid;
+grid-template-columns: max-content 1fr;
+gap: 8px;
+&:hover{
+  background-color: ${(props) => props.hoverable ? lightTheme.secondary : lightTheme.main };
+}
 `

@@ -7,7 +7,9 @@ import {
   Logo,
   UserInfoStyled,
 } from "../Components/Styled/Header.styled";
-import { UserAt, UserName } from "../Components/Styled/Tweet.styled";
+import { SubtitleText } from "../Components/Styled/Text.styled";
+import { ProPic, UserName } from "../Components/Styled/Tweet.styled";
+import BlankProfile from '../img/blank-profile.webp';
 
 type Props = {
   signOut: () => void;
@@ -19,16 +21,19 @@ function Header({signOut, hasUser }: Props) {
   const user = useContext(UserContext);
   return (
     <HeaderStyled>
-      <Logo>Twitter</Logo>
+      <Logo onClick = {() => {
+        navigate('/feed');
+      }}>Twitter</Logo>
       <div
         style={{
           display: "flex",
           gap: "8px",
         }}
       >
+        <ProPic src = {BlankProfile} alt = 'Profile'/>
         <UserInfoStyled>
           <UserName>{user.userName}</UserName>
-          <UserAt>@{user.userAt}</UserAt>
+          <SubtitleText>@{user.userAt}</SubtitleText>
         </UserInfoStyled>
         {hasUser ? (
           <Button onClick={signOut}>Sign out</Button>

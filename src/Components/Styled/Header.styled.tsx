@@ -10,6 +10,9 @@ export const HeaderStyled = styled.header`
 export const Logo = styled.span`
   font-weight: bold;
   font-size: 1.6rem;
+  &:hover{
+    cursor: pointer;
+  }
 `
 export const UserInfoStyled= styled.div`
 display: flex;

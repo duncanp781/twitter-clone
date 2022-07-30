@@ -23,7 +23,7 @@ function TextInput({ id, text, placeholder, defaultVal }: Props) {
         type="text"
         id={id}
         placeholder={placeholder}
-        value={defaultVal}
+        defaultValue={defaultVal}
         name={id}
       />
     </div>

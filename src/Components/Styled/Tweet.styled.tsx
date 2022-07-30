@@ -2,14 +2,15 @@ import styled from 'styled-components';
 
 type Props = {
   large? : boolean,
+  hoverable?: boolean,
 }
 
 export const UserName = styled.span<Props>`
   font-weight: bold;
   font-size: ${props => props.large? '1.5rem' : '1rem'};
   &:hover{
-    text-decoration: underline;
-    cursor: pointer;
+    text-decoration: ${props => props.hoverable? 'underline' : 'none'};
+    cursor: ${props => props.hoverable? 'pointer' : 'auto'};;
   }
 
 `
@@ -27,6 +28,7 @@ min-height: 6rem;
 height: 100%;
 width: 100%;
 resize: none;
+padding: 4px;
 `
 
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { TweetInfo } from '../Pages/Feed'
 import Tweet from './Tweet';
 import uniqid from 'uniqid';
@@ -8,16 +8,18 @@ type Props = {
   remove: (arg0: string) => void,
 }
 
-export default function TweetDisplay({toDisplay, remove}: Props) {
+export default function TweetDisplay({toDisplay, remove}: Props) { 
+
   return (
-    <>{toDisplay.map((tweet) => {
+    <div>{toDisplay.map((tweet) => {
       return (
+        <div key={tweet.id}>
         <Tweet
           tweetInfo={tweet}
           removeTweetFromFeed={remove}
-          key={uniqid()}
-        />
+          
+        /></div>
       );
-    })}</>
+    })}</div>
   )
 }

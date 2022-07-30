@@ -19,14 +19,20 @@ function Feed() {
   const user = useContext(UserContext);
   const [tweetsToDisplay, setTweetsToDisplay] = useState<TweetInfo[]>([]);
 
+  //This is needed in case there are no tweets to load, otherwise it would repeatedly query
+  const [triedLoad, setTriedLoad] = useState<boolean>(false);
+
   //If there are no tweets, load the 10 most recent tweets
   useEffect(() => {
     async function initTweets() {
       let out = await getNTweets(10);
       setTweetsToDisplay(out);
+      setTriedLoad(true);
     }
-    tweetsToDisplay.length === 0 && initTweets();
-  }, [tweetsToDisplay]);
+    if (!triedLoad && tweetsToDisplay.length === 0) {
+      initTweets();
+    }
+  }, [tweetsToDisplay, triedLoad]);
 
   const removeTweetFromFeed = (id: string) => {
     setTweetsToDisplay(tweetsToDisplay.filter((tweet) => tweet.id !== id));
@@ -41,7 +47,10 @@ function Feed() {
             setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
           }}
         />
-        <TweetDisplay toDisplay = {tweetsToDisplay} remove = {removeTweetFromFeed}/>
+        <TweetDisplay
+          toDisplay={tweetsToDisplay}
+          remove={removeTweetFromFeed}
+        />
       </FeedStyled>
     </Page>
   );

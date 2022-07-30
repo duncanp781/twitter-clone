@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  connectAuthEmulator,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
@@ -10,6 +11,7 @@ import {
 } from "firebase/auth";
 import {
   getFirestore,
+  connectFirestoreEmulator,
   doc,
   setDoc,
   getDoc,
@@ -22,6 +24,11 @@ import {
   getDocs,
   deleteDoc,
   where,
+  QuerySnapshot,
+  DocumentData,
+  QueryDocumentSnapshot,
+  DocumentSnapshot,
+  DocumentReference,
 } from "firebase/firestore";
 import { User as DBUser } from "../App";
 import { TweetInfo } from "../Pages/Feed";
@@ -36,7 +43,10 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+//If I want to use the real deal instead of the emulator
+//const db  = getFirestore(app);
+const db = getFirestore();
+connectFirestoreEmulator(db, "localhost", 8080);
 export const auth = getAuth();
 const provider = new GoogleAuthProvider();
 
@@ -46,6 +56,7 @@ export const addUserToDB = async (user: DBUser) => {
     setDoc(userDoc, {
       userName: user.userName,
       userAt: user.userAt,
+      info: user.info,
     });
   } catch (e) {
     console.error("failed to add user to database with error: ", e);
@@ -58,10 +69,11 @@ export const getUserFromDB = async (
   const userDocRef = doc(db, "users/" + uId);
   const userDoc = await getDoc(userDocRef);
   if (!userDoc.data()) return undefined;
-  return {
+  let user = {
     uId,
     ...userDoc.data(),
   } as DBUser;
+  return user;
 };
 
 //Sign in the user with a pop up. If the user isn't in the DB, add it to the DB
@@ -87,47 +99,78 @@ export const createTweet = async (
   tweetContent: string
 ): Promise<TweetInfo> => {
   let newTweet = {
-    user,
+    user: user.uId,
     tweetContent: tweetContent,
     time: serverTimestamp(),
   };
   const newDoc = await addDoc(collection(db, "tweets"), newTweet);
-  return { ...newTweet, time: "Just Now", id: newDoc.id };
+  return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
 };
 
-export const deleteTweetFromDB = async(id: string) => {
-  const tweetRef = doc(db, 'tweets', id);
+export const deleteTweetFromDB = async (id: string) => {
+  const tweetRef = doc(db, "tweets", id);
   deleteDoc(tweetRef);
-}
+};
 
+export const getTweetFromDoc = async (
+  doc: QueryDocumentSnapshot<DocumentData>
+): Promise<TweetInfo | undefined> => {
+  let newTime = doc.data().time
+    ? format(doc.data().time.toDate(), "MM/dd/yyyy")
+    : "Just now";
+  let userId = doc.data().user;
+  let user = await getUserFromDB(userId);
+  if (!user) {
+    return undefined;
+  }
+  return {
+    ...doc.data(),
+    user: user,
+    time: newTime,
+    id: doc.id,
+  } as TweetInfo;
+};
 
 export const getNTweets = async (number: number): Promise<TweetInfo[]> => {
-  let out: TweetInfo[] = [];
+  let out: Promise<TweetInfo | undefined>[] = [];
   const tweetsRef = collection(db, "tweets");
   const tweetsQuery = query(tweetsRef, orderBy("time", "desc"), limit(number));
   const tweetsSnapshot = await getDocs(tweetsQuery);
   tweetsSnapshot.forEach((doc) => {
-    let newTime = (doc.data().time) ? format(doc.data().time.toDate(), "MM/dd/yyyy") : 'Just now';
-    out.push({
-      ...doc.data(),
-      time: newTime,
-    } as TweetInfo);
+    let tweet = getTweetFromDoc(doc);
+    out.push(tweet);
   });
-  return out;
+  let filtered = Promise.all(out).then((result) =>
+    result.filter((result) => {
+      return result !== undefined;
+    })
+  );
+  return (await filtered) as TweetInfo[];
 };
 
-
-export const getNUserTweets = async (uId: string, number: number): Promise<TweetInfo[]> => {
-  let out: TweetInfo[] = [];
+export const getNUserTweets = async (
+  uId: string,
+  number: number
+): Promise<TweetInfo[]> => {
+  let out: Promise<TweetInfo| undefined>[] = [];
   const tweetsRef = collection(db, "tweets");
-  const tweetsQuery = query(tweetsRef, where('user.uId', '==', uId),orderBy("time", "desc"), limit(number));
+  const tweetsQuery = query(
+    tweetsRef,
+    where("user", "==", uId),
+    orderBy("time", "desc"),
+    limit(number)
+  );
   const tweetsSnapshot = await getDocs(tweetsQuery);
-  tweetsSnapshot.forEach((doc) => {
-    let newTime = (doc.data().time) ? format(doc.data().time.toDate(), "MM/dd/yyyy") : 'Just now';
-    out.push({
-      ...doc.data(),
-      time: newTime,
-    } as TweetInfo);
+  tweetsSnapshot.forEach( (doc) => {
+    let tweet =getTweetFromDoc(doc);
+    if (tweet) {
+      out.push(tweet);
+    }
   });
-  return out;
-}
+  let filtered = Promise.all(out).then((result) =>
+    result.filter((result) => {
+      return result !== undefined;
+    })
+  );
+  return (await filtered) as TweetInfo[];
+};

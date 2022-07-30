@@ -27,8 +27,8 @@ export type User = {
 };
 
 export type UserDetails = {
-  bio: string,
-  website: string,
+  bio?: string,
+  website?: string,
 }
 
 export default function App() {

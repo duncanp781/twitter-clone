@@ -21,6 +21,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   const navigate = useNavigate();
 
   const remove = () => {
+    console.log(tweetInfo.id);
     deleteTweetFromDB(tweetInfo.id);
     removeTweetFromFeed(tweetInfo.id);
   };
@@ -31,7 +32,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <TweetHead>
-          <UserName
+          <UserName hoverable
             onClick={() => {
               navigate("/user/" + tweetInfo.user.uId);
             }}

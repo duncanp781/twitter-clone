@@ -63,11 +63,6 @@ export default function LogIn() {
               const userAtInput = form.elements.namedItem(
                 "userAt"
               ) as HTMLInputElement;
-              console.log('adding this user to the db:',{
-                uId: user.uId,
-                userName: userNameInput.value,
-                userAt: userAtInput.value,
-              })
               addUserToDB({
                 uId: user.uId,
                 userName: userNameInput.value,

@@ -46,7 +46,6 @@ export default function EditProfile({ close, update }: Props) {
           addUserToDB(editedUser);
           triggerUpdate();
           update();
-          console.log('edited user is', editedUser);
           close();
         }}
       >

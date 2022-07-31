@@ -23,7 +23,7 @@ export default function NewTweet({ submit }: Props) {
           form.reset();
         }}
 
-        style = {{display: 'flex', flexDirection: 'column', alignItems: 'right',}}
+        style = {{display: 'flex', flexDirection: 'column', alignItems: 'right', gap: '4px',}}
       >
         <TweetField
           onChange={(e) => {

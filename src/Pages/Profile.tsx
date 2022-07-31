@@ -33,8 +33,6 @@ export default function Profile() {
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [showEditProfile, setShowEditProfile] = useState(false);
 
-  //This is needed in case there are no tweets to load, otherwise it would repeatedly query
-  const [triedLoad, setTriedLoad] = useState<boolean>(false);
   let params = useParams();
 
   useEffect(() => {
@@ -51,22 +49,9 @@ export default function Profile() {
       if (profileUser) {
         setProfileUser(profileUser);
         setProfileLoaded(true);
+        //TODO: Make this update the tweets
       }
     });
-  };
-  //If there are no tweets, load the 10 most recent tweets
-  useEffect(() => {
-    async function initTweets() {
-      let out = await getNUserTweets(profileUser.uId, 10);
-      setTweetsToDisplay(out);
-      setTriedLoad(true);
-    }
-
-    profileLoaded && !triedLoad && tweetsToDisplay.length === 0 && initTweets();
-  }, [profileLoaded, tweetsToDisplay, profileUser.uId, triedLoad]);
-
-  const removeTweetFromFeed = (id: string) => {
-    setTweetsToDisplay(tweetsToDisplay.filter((tweet) => tweet.id !== id));
   };
 
   return (
@@ -118,8 +103,9 @@ export default function Profile() {
           />
         ) : null}
         <TweetDisplay
-          toDisplay={tweetsToDisplay}
-          remove={removeTweetFromFeed}
+          getMethod = {() => getNUserTweets(profileUser.uId, 10)}
+          extraTweets = {tweetsToDisplay}
+          ready = {profileLoaded}
         />
       </FeedStyled>
     </Page>

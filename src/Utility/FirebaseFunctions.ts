@@ -53,10 +53,10 @@ const provider = new GoogleAuthProvider();
 export const addUserToDB = async (user: DBUser) => {
   try {
     const userDoc = doc(db, "users/" + user.uId);
+    let toAdd: any = user;
+    delete toAdd.uId;
     setDoc(userDoc, {
-      userName: user.userName,
-      userAt: user.userAt,
-      info: user.info,
+      ...toAdd,
     });
   } catch (e) {
     console.error("failed to add user to database with error: ", e);
@@ -102,9 +102,29 @@ export const createTweet = async (
     user: user.uId,
     tweetContent: tweetContent,
     time: serverTimestamp(),
+    likes: [],
   };
   const newDoc = await addDoc(collection(db, "tweets"), newTweet);
   return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
+};
+
+export const getTweetFromID = async (
+  tweetID: string
+): Promise<TweetInfo | undefined> => {
+  const tweetDocRef = doc(db, "tweets/" + tweetID);
+  const tweetDoc = await getDoc(tweetDocRef);
+  return await getTweetFromDoc(tweetDoc);
+};
+
+export const likeTweet = async (
+  user: DBUser,
+  tweet: TweetInfo
+): Promise<void> => {
+  let newTweet = {
+    ...tweet,
+    likes: [...tweet.likes, user.uId],
+  };
+  setDoc(doc(db, "tweets/" + tweet.id), newTweet);
 };
 
 export const deleteTweetFromDB = async (id: string) => {
@@ -113,18 +133,20 @@ export const deleteTweetFromDB = async (id: string) => {
 };
 
 export const getTweetFromDoc = async (
-  doc: QueryDocumentSnapshot<DocumentData>
+  doc: QueryDocumentSnapshot<DocumentData> | DocumentSnapshot<DocumentData>
 ): Promise<TweetInfo | undefined> => {
-  let newTime = doc.data().time
-    ? format(doc.data().time.toDate(), "MM/dd/yyyy")
+  let data = doc.data();
+  if (!data) return undefined;
+  let newTime = data.time
+    ? format(data.time.toDate(), "MM/dd/yyyy")
     : "Just now";
-  let userId = doc.data().user;
+  let userId = data.user;
   let user = await getUserFromDB(userId);
   if (!user) {
     return undefined;
   }
   return {
-    ...doc.data(),
+    ...data,
     user: user,
     time: newTime,
     id: doc.id,
@@ -152,7 +174,7 @@ export const getNUserTweets = async (
   uId: string,
   number: number
 ): Promise<TweetInfo[]> => {
-  let out: Promise<TweetInfo| undefined>[] = [];
+  let out: Promise<TweetInfo | undefined>[] = [];
   const tweetsRef = collection(db, "tweets");
   const tweetsQuery = query(
     tweetsRef,
@@ -161,8 +183,8 @@ export const getNUserTweets = async (
     limit(number)
   );
   const tweetsSnapshot = await getDocs(tweetsQuery);
-  tweetsSnapshot.forEach( (doc) => {
-    let tweet =getTweetFromDoc(doc);
+  tweetsSnapshot.forEach((doc) => {
+    let tweet = getTweetFromDoc(doc);
     if (tweet) {
       out.push(tweet);
     }

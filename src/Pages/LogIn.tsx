@@ -20,7 +20,7 @@ export default function LogIn() {
   const promptSignUp = async () => {
     try {
       const isNewUser = await signInUser();
-      if (!isNewUser) {
+      if (!isNewUser && user.userName !== 'unknown') {
         navigate("/feed");
         console.log("user exists, navigating to feed");
       } else {

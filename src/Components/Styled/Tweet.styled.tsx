@@ -38,5 +38,14 @@ export const ProPic = styled.img<Props>`
   border-radius: 100%;
 `
 
+export const BottomRow = styled.div`
+  display: flex;
+  justify-content: right;
+  min-height: 2rem;
+  gap: 16px
+`
+export const TweetIcon = styled.img`
+  height: 2rem;
+`
 
 export {}

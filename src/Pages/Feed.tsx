@@ -4,7 +4,7 @@ import { Page } from "../Components/Styled/Page.styled";
 import uniqid from "uniqid";
 import NewTweet from "../Components/NewTweet";
 import { User, UserContext } from "../App";
-import { createTweet, getNTweets } from "../Utility/FirebaseFunctions";
+import { createTweet, getNTweets, getNUserTweets } from "../Utility/FirebaseFunctions";
 import { FeedStyled } from "../Components/Styled/Feed.styled";
 import TweetDisplay from "../Components/TweetDisplay";
 
@@ -13,30 +13,14 @@ export type TweetInfo = {
   tweetContent: string;
   time: string;
   id: string;
+  likes: string[]
 };
 
 function Feed() {
   const user = useContext(UserContext);
   const [tweetsToDisplay, setTweetsToDisplay] = useState<TweetInfo[]>([]);
 
-  //This is needed in case there are no tweets to load, otherwise it would repeatedly query
-  const [triedLoad, setTriedLoad] = useState<boolean>(false);
-
-  //If there are no tweets, load the 10 most recent tweets
-  useEffect(() => {
-    async function initTweets() {
-      let out = await getNTweets(10);
-      setTweetsToDisplay(out);
-      setTriedLoad(true);
-    }
-    if (!triedLoad && tweetsToDisplay.length === 0) {
-      initTweets();
-    }
-  }, [tweetsToDisplay, triedLoad]);
-
-  const removeTweetFromFeed = (id: string) => {
-    setTweetsToDisplay(tweetsToDisplay.filter((tweet) => tweet.id !== id));
-  };
+  
 
   return (
     <Page>
@@ -48,8 +32,9 @@ function Feed() {
           }}
         />
         <TweetDisplay
-          toDisplay={tweetsToDisplay}
-          remove={removeTweetFromFeed}
+          getMethod = {() => getNTweets(10)}
+          extraTweets = {tweetsToDisplay}
+          ready = {true}
         />
       </FeedStyled>
     </Page>

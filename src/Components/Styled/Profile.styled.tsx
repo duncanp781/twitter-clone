@@ -5,6 +5,7 @@ export const ProfileStyled = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px; 
+  padding-bottom: 16px;
 `;
 
 export const ProfileHeader = styled.div`

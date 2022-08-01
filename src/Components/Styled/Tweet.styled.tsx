@@ -41,6 +41,7 @@ export const ProPic = styled.img<Props>`
 export const BottomRow = styled.div`
   display: flex;
   justify-content: right;
+  align-items: center;
   min-height: 2rem;
   gap: 16px
 `

@@ -29,6 +29,7 @@ import {
   QueryDocumentSnapshot,
   DocumentSnapshot,
   DocumentReference,
+  updateDoc,
 } from "firebase/firestore";
 import { User as DBUser } from "../App";
 import { TweetInfo } from "../Pages/Feed";
@@ -104,6 +105,7 @@ export const createTweet = async (
     time: serverTimestamp(),
     likes: [],
   };
+  console.log("creating the following tweet:", newTweet);
   const newDoc = await addDoc(collection(db, "tweets"), newTweet);
   return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
 };
@@ -120,11 +122,27 @@ export const likeTweet = async (
   user: DBUser,
   tweet: TweetInfo
 ): Promise<void> => {
-  let newTweet = {
+  let newTweet: any = {
     ...tweet,
     likes: [...tweet.likes, user.uId],
   };
-  setDoc(doc(db, "tweets/" + tweet.id), newTweet);
+  delete newTweet.time;
+  newTweet.user = newTweet.user.uId;
+  updateDoc(doc(db, "tweets/" + tweet.id), newTweet);
+};
+
+export const unlikeTweet = async (
+  user: DBUser,
+  tweet: TweetInfo
+): Promise<void> => {
+  let newTweet: any = {
+    ...tweet,
+    likes: tweet.likes.filter(like => (like !== user.uId)),
+  };
+  delete newTweet.time;
+  newTweet.user = newTweet.user.uId;
+  updateDoc(doc(db, "tweets/" + tweet.id), newTweet);
+
 };
 
 export const deleteTweetFromDB = async (id: string) => {
@@ -136,6 +154,7 @@ export const getTweetFromDoc = async (
   doc: QueryDocumentSnapshot<DocumentData> | DocumentSnapshot<DocumentData>
 ): Promise<TweetInfo | undefined> => {
   let data = doc.data();
+  console.log("the tweet data is", data);
   if (!data) return undefined;
   let newTime = data.time
     ? format(data.time.toDate(), "MM/dd/yyyy")
@@ -143,6 +162,7 @@ export const getTweetFromDoc = async (
   let userId = data.user;
   let user = await getUserFromDB(userId);
   if (!user) {
+    console.log("failed to get user");
     return undefined;
   }
   return {

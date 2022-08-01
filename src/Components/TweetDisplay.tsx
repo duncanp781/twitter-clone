@@ -18,6 +18,7 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
   useEffect(() => {
     async function initTweets() {
       let out = await getMethod();
+      console.log('got the following tweets', out);
       setToDisplay([...toDisplay, ...out]);
       setTriedLoad(true);
     }
@@ -43,7 +44,6 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
             tweetInfo={tweet}
             removeTweetFromFeed={removeTweetFromFeed}
             key={uniqid()}
-            update={(tweet) => {}}
           />
         );
       })}

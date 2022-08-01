@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { lightTheme } from './Themes';
 
 type Props = {
   large? : boolean,
@@ -31,11 +32,21 @@ resize: none;
 padding: 4px;
 `
 
+export const ProPicContainer = styled.div<Props>`
+background-color: ${lightTheme.main};
+height: ${props => props.large ? '6rem' : '2.5rem'};
+width: ${props => props.large ? '6rem' : '2.5rem'};
+overflow: hidden;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 100%;
 
+`
 
 export const ProPic = styled.img<Props>`
-  height: ${props => props.large ? '6rem' : '2.5rem'};
-  border-radius: 100%;
+  max-height: ${props => props.large ? '6rem' : '2.5rem'};
+  max-width: ${props => props.large ? '6rem' : '2.5rem'};
 `
 
 export const BottomRow = styled.div`

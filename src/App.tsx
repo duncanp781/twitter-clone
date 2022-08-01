@@ -10,11 +10,15 @@ import {
   getUserFromDB,
   signOutUser,
 } from "./Utility/FirebaseFunctions";
+import BlankProfile from "./img/blank-profile.webp";
 
 export const UserContext = React.createContext<User>({
   userName: "guest",
   userAt: "test",
   uId: "1",
+  info: {
+    img: BlankProfile,
+  },
 });
 
 export const TriggerUserUpdate = React.createContext(() => {});
@@ -23,13 +27,14 @@ export type User = {
   userName: string;
   userAt: string;
   uId: string;
-  info?: UserDetails
+  info: UserDetails;
 };
 
 export type UserDetails = {
-  bio?: string,
-  website?: string,
-}
+  bio?: string;
+  website?: string;
+  img: string;
+};
 
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
@@ -37,6 +42,9 @@ export default function App() {
     userName: "guest",
     userAt: "test",
     uId: "1",
+    info: {
+      img: BlankProfile,
+    },
   });
 
   const updateUser = async () => {
@@ -46,14 +54,13 @@ export default function App() {
     }
   };
 
-
   useEffect(() => {
-    console.log('The current user is, ', currentUser)
-  }, [currentUser])
+    console.log("The current user is, ", currentUser);
+  }, [currentUser]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log('auth state changed');
+      console.log("auth state changed");
       if (user) {
         //If there is an account signed in, check if it is an existing user.
         //If not, add unknown information
@@ -65,6 +72,9 @@ export default function App() {
               uId: user.uid,
               userName: "unknown",
               userAt: "unknown",
+              info: {
+                img: BlankProfile
+              }
             };
             addUserToDB(unknownUser);
             setCurrentUser(unknownUser);
@@ -76,6 +86,9 @@ export default function App() {
           userName: "guest",
           userAt: "test",
           uId: "1",
+          info: {
+            img: BlankProfile,
+          },
         });
       }
 
@@ -94,6 +107,9 @@ export default function App() {
                   userName: "guest",
                   userAt: "test",
                   uId: "1",
+                  info: {
+                    img: BlankProfile,
+                  },
                 }
           }
         >

@@ -12,7 +12,7 @@ import {
   ProfileHeader,
   ProfileStyled,
 } from "../Components/Styled/Profile.styled";
-import { ProPic, UserName } from "../Components/Styled/Tweet.styled";
+import { ProPic, ProPicContainer, UserName } from "../Components/Styled/Tweet.styled";
 import { UserInfoStyled } from "../Components/Styled/Header.styled";
 import { SubtitleText } from "../Components/Styled/Text.styled";
 import { TweetInfo } from "./Feed";
@@ -27,6 +27,9 @@ export default function Profile() {
     userName: "guest",
     userAt: "test",
     uId: "1",
+    info: {
+      img: BlankProfile
+    }
   });
   const [tweetsToDisplay, setTweetsToDisplay] = useState<TweetInfo[]>([]);
   const user = useContext(UserContext);
@@ -64,25 +67,27 @@ export default function Profile() {
       )}
       <ProfileStyled>
         <ProfileHeader>
-          <ProPic
-            src={BlankProfile}
-            alt="profile"
-            style={{ border: `4px solid white` }}
-            large
-          />
+          <ProPicContainer large style={{ border: `4px solid white` }}>
+            <ProPic
+              src={profileUser.info.img}
+              alt="profile"
+              
+              large
+            />
+          </ProPicContainer>
         </ProfileHeader>
         <div>
           <UserInfoStyled>
             <span>
               <UserName large>{profileUser.userName}</UserName>
-              <img
-                src={EditIcon}
-                alt="Edit Profile"
-                style={{ height: "1.2rem" }}
-                onClick={() => {
-                  setShowEditProfile(true);
-                }}
-              />
+            {profileUser.uId === user.uId && <img
+              src={EditIcon}
+              alt="Edit Profile"
+              style={{ height: "1.2rem" }}
+              onClick={() => {
+                setShowEditProfile(true);
+              }}
+            />}
             </span>
             <SubtitleText>@{profileUser.userAt}</SubtitleText>
           </UserInfoStyled>

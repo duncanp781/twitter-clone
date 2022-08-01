@@ -1,6 +1,7 @@
+import { ref, uploadBytes } from "firebase/storage";
 import React, { useContext } from "react";
 import { TriggerUserUpdate, UserContext } from "../App";
-import { addUserToDB } from "../Utility/FirebaseFunctions";
+import { addUserToDB, storage } from "../Utility/FirebaseFunctions";
 import Modal from "./Modal";
 import { Button } from "./Styled/Button.styled";
 import { TweetField } from "./Styled/Tweet.styled";
@@ -34,6 +35,16 @@ export default function EditProfile({ close, update }: Props) {
           const userBioInput = form.elements.namedItem(
             "userBio"
           ) as HTMLInputElement;
+          const userProPicInput = form.elements.namedItem(
+            "userProPic"
+          ) as HTMLInputElement;
+          const userProPics = userProPicInput.files;
+          let userProPic = userProPics ? userProPics[0] : null ;
+          if(userProPic && userProPic.size < 3145728){
+            const storageRef = ref(storage, user.uId);
+            uploadBytes(storageRef, userProPic);
+          }
+
           const editedUser = {
             ...user,
             userName: userNameInput.value,
@@ -41,8 +52,8 @@ export default function EditProfile({ close, update }: Props) {
             info: {
               ...user.info,
               bio: userBioInput.value,
-            }
-          }
+            },
+          };
           addUserToDB(editedUser);
           triggerUpdate();
           update();
@@ -62,9 +73,15 @@ export default function EditProfile({ close, update }: Props) {
           defaultValue={user.info?.bio}
           placeholder="Write a little about yourself"
         ></TweetField>
+        <label htmlFor="userProPic">
+          Upload a profile picture: (Max Size 3MB) 
+          <input type="file" id="userProPic" accept="image/*" />
+        </label>
         <div style={{ display: "flex", justifyContent: "right", gap: "8px" }}>
-          <Button cancel type = 'button' onClick = {close}>Cancel</Button>
-          <Button type = 'submit'>Submit</Button>
+          <Button cancel type="button" onClick={close}>
+            Cancel
+          </Button>
+          <Button type="submit">Submit</Button>
         </div>
       </form>
     </Modal>

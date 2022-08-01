@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TweetInfo } from "../Pages/Feed";
 import { Box, TweetStyled } from "./Styled/Box.styled";
 import {
@@ -7,15 +7,17 @@ import {
   ProPic,
   BottomRow,
   TweetIcon,
+  ProPicContainer,
 } from "./Styled/Tweet.styled";
 import Trash from "../img/trash.svg";
-import { deleteTweetFromDB, likeTweet, unlikeTweet } from "../Utility/FirebaseFunctions";
+import { deleteTweetFromDB, getUserProPic, likeTweet, storage, unlikeTweet } from "../Utility/FirebaseFunctions";
 import BlankProfile from "../img/blank-profile.webp";
 import Heart from "../img/heart.svg";
 import FilledHeart from "../img/heart_filled.svg";
 import { useNavigate } from "react-router";
 import { SubtitleText } from "./Styled/Text.styled";
 import { UserContext } from "../App";
+import { getDownloadURL, ref } from "firebase/storage";
 
 type Props = {
   tweetInfo: TweetInfo;
@@ -27,6 +29,10 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   const user = useContext(UserContext);
   const [liked, setLiked] = useState(tweetInfo.likes.includes(user.uId));
   const [localLikes, setLocalLikes] = useState(tweetInfo.likes.length);
+  const [proPic, setProPic] = useState(BlankProfile);
+  useEffect(() => {
+    getUserProPic(tweetInfo.user.uId).then(url => setProPic(url))
+  })
 
   const remove = () => {
     deleteTweetFromDB(tweetInfo.id);
@@ -35,9 +41,9 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
 
   return (
     <TweetStyled hoverable>
-      <div>
-        <ProPic src={BlankProfile} alt={"profile"} />
-      </div>
+      <ProPicContainer>
+        <ProPic src={proPic} alt={"profile"} />
+      </ProPicContainer>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <TweetHead>
           <UserName

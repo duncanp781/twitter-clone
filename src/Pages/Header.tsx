@@ -8,7 +8,7 @@ import {
   UserInfoStyled,
 } from "../Components/Styled/Header.styled";
 import { SubtitleText } from "../Components/Styled/Text.styled";
-import { ProPic, UserName } from "../Components/Styled/Tweet.styled";
+import { ProPic, ProPicContainer, UserName } from "../Components/Styled/Tweet.styled";
 import BlankProfile from "../img/blank-profile.webp";
 
 type Props = {
@@ -34,7 +34,9 @@ function Header({ signOut, hasUser }: Props) {
           gap: "8px",
         }}
       >
-        <ProPic src={BlankProfile} alt="Profile" />
+        <ProPicContainer>
+          <ProPic src={user.info.img} alt="Profile" />
+        </ProPicContainer>
         <UserInfoStyled>
           <UserName
             hoverable

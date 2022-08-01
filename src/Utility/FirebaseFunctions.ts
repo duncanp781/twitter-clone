@@ -2,7 +2,6 @@ import { format } from "date-fns";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
-  connectAuthEmulator,
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
@@ -24,13 +23,16 @@ import {
   getDocs,
   deleteDoc,
   where,
-  QuerySnapshot,
   DocumentData,
   QueryDocumentSnapshot,
   DocumentSnapshot,
-  DocumentReference,
   updateDoc,
 } from "firebase/firestore";
+import {
+  getDownloadURL,
+  getStorage, ref
+} from 'firebase/storage';
+import BlankProfile from '../img/blank-profile.webp'
 import { User as DBUser } from "../App";
 import { TweetInfo } from "../Pages/Feed";
 
@@ -49,6 +51,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore();
 connectFirestoreEmulator(db, "localhost", 8080);
 export const auth = getAuth();
+export const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 export const addUserToDB = async (user: DBUser) => {
@@ -69,10 +72,17 @@ export const getUserFromDB = async (
 ): Promise<DBUser | undefined> => {
   const userDocRef = doc(db, "users/" + uId);
   const userDoc = await getDoc(userDocRef);
-  if (!userDoc.data()) return undefined;
+  
+  let data = userDoc.data();
+  if (!data) return undefined;
+  const img = await getUserProPic(uId)
   let user = {
     uId,
-    ...userDoc.data(),
+    ...data,
+    info: {
+      ...data.info,
+      img,
+    }
   } as DBUser;
   return user;
 };
@@ -105,10 +115,15 @@ export const createTweet = async (
     time: serverTimestamp(),
     likes: [],
   };
-  console.log("creating the following tweet:", newTweet);
   const newDoc = await addDoc(collection(db, "tweets"), newTweet);
   return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
 };
+
+export const getUserProPic = async(
+  uId: string,
+): Promise<string> => {
+  return getDownloadURL(ref(storage, uId)).then((url) =>  url).catch((e) => BlankProfile);
+}
 
 export const getTweetFromID = async (
   tweetID: string
@@ -154,7 +169,6 @@ export const getTweetFromDoc = async (
   doc: QueryDocumentSnapshot<DocumentData> | DocumentSnapshot<DocumentData>
 ): Promise<TweetInfo | undefined> => {
   let data = doc.data();
-  console.log("the tweet data is", data);
   if (!data) return undefined;
   let newTime = data.time
     ? format(data.time.toDate(), "MM/dd/yyyy")
@@ -162,7 +176,7 @@ export const getTweetFromDoc = async (
   let userId = data.user;
   let user = await getUserFromDB(userId);
   if (!user) {
-    console.log("failed to get user");
+    console.error('Tweet contains reference to nonexistent user')
     return undefined;
   }
   return {

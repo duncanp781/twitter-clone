@@ -10,6 +10,7 @@ import {
   addUserToDB,
   signInUser,
 } from "../Utility/FirebaseFunctions";
+import BlankProfile from '../img/blank-profile.webp'
 
 export default function LogIn() {
   const user = useContext(UserContext);
@@ -67,6 +68,9 @@ export default function LogIn() {
                 uId: user.uId,
                 userName: userNameInput.value,
                 userAt: userAtInput.value,
+                info: {
+                  img: BlankProfile,
+                }
               });
               form.reset();
               triggerUpdate();

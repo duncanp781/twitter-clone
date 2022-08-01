@@ -20,8 +20,6 @@ function Feed() {
   const user = useContext(UserContext);
   const [tweetsToDisplay, setTweetsToDisplay] = useState<TweetInfo[]>([]);
 
-  
-
   return (
     <Page>
       <FeedStyled>
@@ -32,7 +30,8 @@ function Feed() {
           }}
         />
         <TweetDisplay
-          getMethod = {() => getNTweets(10)}
+          getMethod = {() => {
+            return getNTweets(10)}}
           extraTweets = {tweetsToDisplay}
           ready = {true}
         />

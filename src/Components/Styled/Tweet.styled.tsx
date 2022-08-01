@@ -33,7 +33,7 @@ padding: 4px;
 `
 
 export const ProPicContainer = styled.div<Props>`
-background-color: ${lightTheme.main};
+background-color: white;
 height: ${props => props.large ? '6rem' : '2.5rem'};
 width: ${props => props.large ? '6rem' : '2.5rem'};
 overflow: hidden;

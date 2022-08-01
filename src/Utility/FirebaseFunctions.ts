@@ -28,11 +28,8 @@ import {
   DocumentSnapshot,
   updateDoc,
 } from "firebase/firestore";
-import {
-  getDownloadURL,
-  getStorage, ref
-} from 'firebase/storage';
-import BlankProfile from '../img/blank-profile.webp'
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import BlankProfile from "../img/blank-profile.webp";
 import { User as DBUser } from "../App";
 import { TweetInfo } from "../Pages/Feed";
 
@@ -72,17 +69,17 @@ export const getUserFromDB = async (
 ): Promise<DBUser | undefined> => {
   const userDocRef = doc(db, "users/" + uId);
   const userDoc = await getDoc(userDocRef);
-  
+
   let data = userDoc.data();
   if (!data) return undefined;
-  const img = await getUserProPic(uId)
+  const img = await getUserProPic(uId);
   let user = {
     uId,
     ...data,
     info: {
       ...data.info,
       img,
-    }
+    },
   } as DBUser;
   return user;
 };
@@ -119,11 +116,13 @@ export const createTweet = async (
   return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
 };
 
-export const getUserProPic = async(
-  uId: string,
-): Promise<string> => {
-  return getDownloadURL(ref(storage, uId)).then((url) =>  url).catch((e) => BlankProfile);
-}
+export const getUserProPic = async (uId: string): Promise<string> => {
+  if (uId === '1') return BlankProfile;
+  return getDownloadURL(ref(storage, uId)).then(
+    (url) => url,
+    () => BlankProfile
+  );
+};
 
 export const getTweetFromID = async (
   tweetID: string
@@ -152,12 +151,11 @@ export const unlikeTweet = async (
 ): Promise<void> => {
   let newTweet: any = {
     ...tweet,
-    likes: tweet.likes.filter(like => (like !== user.uId)),
+    likes: tweet.likes.filter((like) => like !== user.uId),
   };
   delete newTweet.time;
   newTweet.user = newTweet.user.uId;
   updateDoc(doc(db, "tweets/" + tweet.id), newTweet);
-
 };
 
 export const deleteTweetFromDB = async (id: string) => {
@@ -176,7 +174,7 @@ export const getTweetFromDoc = async (
   let userId = data.user;
   let user = await getUserFromDB(userId);
   if (!user) {
-    console.error('Tweet contains reference to nonexistent user')
+    console.error("Tweet contains reference to nonexistent user");
     return undefined;
   }
   return {

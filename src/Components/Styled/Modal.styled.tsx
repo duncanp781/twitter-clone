@@ -3,6 +3,7 @@ import { lightTheme } from './Themes';
 
 
 export const ModalScreenStyled = styled.div`
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
@@ -14,6 +15,7 @@ export const ModalScreenStyled = styled.div`
 
 export const ModalContainerStyled = styled.div`
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
@@ -22,7 +24,7 @@ export const ModalContainerStyled = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 30%;
+  min-width: 50%;
   min-height: 30%;
   border-radius: 4px;
 `

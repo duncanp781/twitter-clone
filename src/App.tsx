@@ -12,14 +12,16 @@ import {
 } from "./Utility/FirebaseFunctions";
 import BlankProfile from "./img/blank-profile.webp";
 
-export const UserContext = React.createContext<User>({
+export const defaultUser = {
   userName: "guest",
   userAt: "test",
   uId: "1",
   info: {
     img: BlankProfile,
   },
-});
+};
+
+export const UserContext = React.createContext<User>(defaultUser);
 
 export const TriggerUserUpdate = React.createContext(() => {});
 
@@ -36,18 +38,14 @@ export type UserDetails = {
   img: string;
 };
 
+
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState<User>({
-    userName: "guest",
-    userAt: "test",
-    uId: "1",
-    info: {
-      img: BlankProfile,
-    },
-  });
+  const [currentUser, setCurrentUser] = useState<User>(defaultUser);
+  const [gotAuth, setGotAuth] = useState(false);
 
   const updateUser = async () => {
+    console.log('updating user in context');
     let realUser = await getUserFromDB(currentUser.uId);
     if (realUser && realUser !== currentUser) {
       setCurrentUser(realUser);
@@ -59,7 +57,9 @@ export default function App() {
   }, [currentUser]);
 
   useEffect(() => {
+    
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      if(!gotAuth){
       console.log("auth state changed");
       if (user) {
         //If there is an account signed in, check if it is an existing user.
@@ -73,8 +73,8 @@ export default function App() {
               userName: "unknown",
               userAt: "unknown",
               info: {
-                img: BlankProfile
-              }
+                img: BlankProfile,
+              },
             };
             addUserToDB(unknownUser);
             setCurrentUser(unknownUser);
@@ -82,38 +82,19 @@ export default function App() {
         });
       } else {
         //If not signed in add guest information
-        setCurrentUser({
-          userName: "guest",
-          userAt: "test",
-          uId: "1",
-          info: {
-            img: BlankProfile,
-          },
-        });
+        setCurrentUser(defaultUser);
       }
-
+      setGotAuth(true);
       return unsubscribe;
-    });
-  }, []);
+    }
+    })
+  }, [gotAuth]);
 
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: "100%",}}>
       <TriggerUserUpdate.Provider value={updateUser}>
-        <UserContext.Provider
-          value={
-            currentUser
-              ? currentUser
-              : {
-                  userName: "guest",
-                  userAt: "test",
-                  uId: "1",
-                  info: {
-                    img: BlankProfile,
-                  },
-                }
-          }
-        >
-          <BrowserRouter>
+        <UserContext.Provider value={currentUser ? currentUser : defaultUser}>
+          <BrowserRouter >
             {showHeader && (
               <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} />
             )}

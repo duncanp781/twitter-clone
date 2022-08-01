@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Box } from "./Styled/Box.styled";
+import React, { useContext, useState } from "react";
+import { UserContext } from "../App";
+import { Box, TweetStyled } from "./Styled/Box.styled";
 import { Button } from "./Styled/Button.styled";
-import { TweetField } from "./Styled/Tweet.styled";
+import { ProPic, ProPicContainer, TweetField } from "./Styled/Tweet.styled";
 
 type Props = {
   submit: (text: string) => any;
@@ -9,9 +10,13 @@ type Props = {
 
 export default function NewTweet({ submit }: Props) {
   const [tweetLength, setTweetLength] = useState(0);
+  const user = useContext(UserContext);
 
   return (
-    <Box>
+    <TweetStyled>
+      <ProPicContainer>
+        <ProPic src = {user.info.img} alt = 'Profile'/>
+      </ProPicContainer>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -31,9 +36,10 @@ export default function NewTweet({ submit }: Props) {
           }}
           maxLength={250}
           name="tweet_content"
+          placeholder = "What's on your mind?"
         ></TweetField>
         <Button disabled={tweetLength === 0 || tweetLength > 250}>Tweet</Button>
       </form>
-    </Box>
+    </TweetStyled>
   );
 }

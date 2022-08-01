@@ -13,7 +13,7 @@ export const Box = styled.div<Props>`
   flex-direction: column;
   gap: 8px;
   &:hover{
-    background-color: ${(props) => props.hoverable ? lightTheme.secondary : lightTheme.main }; 
+    background-color: ${(props) => props.hoverable ? lightTheme.light : lightTheme.main }; 
   }
 `
 
@@ -24,6 +24,6 @@ display: grid;
 grid-template-columns: max-content 1fr;
 gap: 8px;
 &:hover{
-  background-color: ${(props) => props.hoverable ? lightTheme.secondary : lightTheme.main };
+  background-color: ${(props) => props.hoverable ? lightTheme.light: lightTheme.main };
 }
 `

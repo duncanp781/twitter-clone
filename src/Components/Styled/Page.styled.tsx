@@ -3,8 +3,10 @@ import React from 'react'
 
 
 export const Page = styled.div`
-width: 100%;
+position: relative;
+left: 30%;
+width: 70%;
 height: 100%;
-padding: 16px 15%;
+padding: 16px 8%;
 `
 

@@ -18,6 +18,7 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
   useEffect(() => {
     async function initTweets() {
       let out = await getMethod();
+      
       setToDisplay([...toDisplay, ...out]);
       setTriedLoad(true);
     }
@@ -27,7 +28,9 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
 
   useEffect(() => {
     if (extraTweets !== undefined) {
-      setToDisplay((prevDisplayed) => {return [...extraTweets, ...prevDisplayed]})
+      setToDisplay((prevDisplayed) => {
+        return [...extraTweets, ...prevDisplayed];
+      });
     }
   }, [extraTweets]);
 
@@ -37,15 +40,16 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
 
   return (
     <>
-      {toDisplay.map((tweet) => {
-        return (
-          <Tweet
-            tweetInfo={tweet}
-            removeTweetFromFeed={removeTweetFromFeed}
-            key={uniqid()}
-          />
-        );
-      })}
+      {
+        toDisplay.map((tweet) => {
+          return triedLoad && (
+            <Tweet
+              tweetInfo={tweet}
+              removeTweetFromFeed={removeTweetFromFeed}
+              key={tweet.id}
+            />
+          );
+        })}
     </>
   );
 }

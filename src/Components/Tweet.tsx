@@ -10,14 +10,18 @@ import {
   ProPicContainer,
 } from "./Styled/Tweet.styled";
 import Trash from "../img/trash.svg";
-import { deleteTweetFromDB, getUserProPic, likeTweet, storage, unlikeTweet } from "../Utility/FirebaseFunctions";
+import {
+  deleteTweetFromDB,
+  getUserProPic,
+  likeTweet,
+  unlikeTweet,
+} from "../Utility/FirebaseFunctions";
 import BlankProfile from "../img/blank-profile.webp";
 import Heart from "../img/heart.svg";
 import FilledHeart from "../img/heart_filled.svg";
 import { useNavigate } from "react-router";
 import { SubtitleText } from "./Styled/Text.styled";
 import { UserContext } from "../App";
-import { getDownloadURL, ref } from "firebase/storage";
 
 type Props = {
   tweetInfo: TweetInfo;
@@ -30,9 +34,15 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   const [liked, setLiked] = useState(tweetInfo.likes.includes(user.uId));
   const [localLikes, setLocalLikes] = useState(tweetInfo.likes.length);
   const [proPic, setProPic] = useState(BlankProfile);
+  const [triedLoad, setTriedLoad] = useState(false);
   useEffect(() => {
-    getUserProPic(tweetInfo.user.uId).then(url => setProPic(url))
-  })
+    if (!triedLoad) {
+      getUserProPic(tweetInfo.user.uId).then((url) => {
+        setProPic(url);
+        setTriedLoad(true);
+      });
+    }
+  }, [tweetInfo.user.uId, triedLoad]);
 
   const remove = () => {
     deleteTweetFromDB(tweetInfo.id);
@@ -60,19 +70,27 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
         <div>{tweetInfo.tweetContent}</div>
         <BottomRow>
           {liked ? (
-            <TweetIcon src={FilledHeart} alt="liked tweet" onClick = {async () => {
-              setLiked(false);
-              setLocalLikes(localLikes - 1);
-              await unlikeTweet(user, tweetInfo);
-            }}
-              />
+            <TweetIcon
+              src={FilledHeart}
+              alt="liked tweet"
+              onClick={async () => {
+                setLiked(false);
+                setLocalLikes(localLikes - 1);
+                await unlikeTweet(user, tweetInfo);
+              }}
+            />
           ) : (
-            <TweetIcon src={Heart} alt="like tweet" onClick = {async () => {
-              setLiked(true);
-              setLocalLikes(localLikes + 1);
-              await likeTweet(user, tweetInfo);
-            }}/>
-          )} <span>{localLikes}</span>
+            <TweetIcon
+              src={Heart}
+              alt="like tweet"
+              onClick={async () => {
+                setLiked(true);
+                setLocalLikes(localLikes + 1);
+                await likeTweet(user, tweetInfo);
+              }}
+            />
+          )}{" "}
+          <span>{localLikes}</span>
           {user.uId === tweetInfo.user.uId && (
             <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
           )}

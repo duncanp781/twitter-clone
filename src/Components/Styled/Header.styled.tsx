@@ -6,10 +6,12 @@ type Props = {
 }
 
 export const HeaderStyled = styled.div`
+position: sticky;
+top: 0;
+align-self: flex-start;
   height: 100vh;
   max-width: 20%;
   min-width: 300px;
-  position: sticky;
   padding: 32px;
   display: flex;
   flex-direction: column;
@@ -26,12 +28,11 @@ export const Logo = styled.span`
 `;
 
 export const SidebarContainer = styled.div<Props>`
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 16px;
+gap: 8px;
+  
   border-radius: 32px;
   &:hover {
     ${props => props.hoverable? `background-color: ${lightTheme.secondary}` : '' };
@@ -41,7 +42,7 @@ export const SidebarContainer = styled.div<Props>`
 
 export const SidebarButton = styled.button`
   width: 85%;
-  padding: 12px 24px;
+  padding: 12px 12px;
   border-radius: 20px;
   border: none;
   background: none;

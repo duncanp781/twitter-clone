@@ -6,9 +6,10 @@ import { ProPic, ProPicContainer, TweetField } from "./Styled/Tweet.styled";
 
 type Props = {
   submit: (text: string) => any;
+  placeholder?: string
 };
 
-export default function NewTweet({ submit }: Props) {
+export default function NewTweet({ submit, placeholder = "What's on your mind?" }: Props) {
   const [tweetLength, setTweetLength] = useState(0);
   const user = useContext(UserContext);
 
@@ -28,7 +29,7 @@ export default function NewTweet({ submit }: Props) {
           form.reset();
         }}
 
-        style = {{display: 'flex', flexDirection: 'column', alignItems: 'right', gap: '4px',}}
+        style = {{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px',}}
       >
         <TweetField
           onChange={(e) => {
@@ -36,9 +37,9 @@ export default function NewTweet({ submit }: Props) {
           }}
           maxLength={250}
           name="tweet_content"
-          placeholder = "What's on your mind?"
+          placeholder = {placeholder}
         ></TweetField>
-        <Button disabled={tweetLength === 0 || tweetLength > 250}>Tweet</Button>
+        <Button style = {{width: 'fit-content', }}disabled={tweetLength === 0 || tweetLength > 250}>Tweet</Button>
       </form>
     </TweetStyled>
   );

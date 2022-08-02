@@ -25,11 +25,12 @@ export const TweetHead = styled.div`
 
 `
 export const TweetField = styled.textarea`
-min-height: 6rem;
+min-height: 4rem;
 height: 100%;
 width: 100%;
 resize: none;
 padding: 4px;
+border: none;
 `
 
 export const ProPicContainer = styled.div<Props>`
@@ -57,7 +58,7 @@ export const BottomRow = styled.div`
   gap: 16px
 `
 export const TweetIcon = styled.img`
-  height: 2rem;
+  height: 1.5rem;
   &:hover{
     cursor: pointer;
   }

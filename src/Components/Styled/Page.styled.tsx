@@ -8,7 +8,7 @@ width: 100%;
 max-width: 40vw;
 min-width: 500px;
 height: 100%;
-padding: 16px 0;
+min-height: 100vh;
 border-right: 2px solid ${lightTheme.secondary};
 border-left: 2px solid ${lightTheme.secondary};
 `

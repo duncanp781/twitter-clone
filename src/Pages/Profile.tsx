@@ -21,6 +21,7 @@ import { FeedStyled } from "../Components/Styled/Feed.styled";
 import NewTweet from "../Components/NewTweet";
 import EditIcon from "../img/edit.svg";
 import EditProfile from "../Components/EditProfile";
+import BackHeader from "../Components/BackHeader";
 
 export default function Profile() {
   const [profileUser, setProfileUser] = useState<User>({
@@ -59,6 +60,7 @@ export default function Profile() {
 
   return (
     <Page>
+      <BackHeader><div style = {{fontWeight: 'bold',}}>{profileUser.userName}</div></BackHeader>
       {showEditProfile && (
         <EditProfile
           close={() => setShowEditProfile(false)}

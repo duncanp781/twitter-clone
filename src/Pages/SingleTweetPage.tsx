@@ -44,6 +44,7 @@ function SingleTweetPage() {
                 setLatestResponse([response]);
               });
             }}
+            placeholder = 'Write your response'
           />
           <TweetDisplay
             getMethod={() => getNResponses(currentTweet, 10)}

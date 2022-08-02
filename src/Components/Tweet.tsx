@@ -19,9 +19,11 @@ import {
 import BlankProfile from "../img/blank-profile.webp";
 import Heart from "../img/heart.svg";
 import FilledHeart from "../img/heart_filled.svg";
-import { useNavigate } from "react-router";
+import Comment from '../img/comment.svg';
+import { useLocation, useNavigate } from "react-router";
 import { SubtitleText } from "./Styled/Text.styled";
 import { UserContext } from "../App";
+import { lightTheme } from "./Styled/Themes";
 
 type Props = {
   tweetInfo: TweetInfo;
@@ -30,6 +32,7 @@ type Props = {
 
 function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = useContext(UserContext);
   const [liked, setLiked] = useState(tweetInfo.likes.includes(user.uId));
   const [localLikes, setLocalLikes] = useState(tweetInfo.likes.length);
@@ -96,6 +99,12 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
             }
           }}
         >
+          {location.pathname === '/feed' ? 
+            <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
+              <TweetIcon src = {Comment} alt = 'View Replies' onClick = {() => navigate('/tweet/' + tweetInfo.id)}/>
+              <span>{tweetInfo.responses.length}</span>
+            </div> : null}
+            <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
           {liked ? (
             <TweetIcon
               src={FilledHeart}
@@ -116,8 +125,9 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
                 await likeTweet(user, tweetInfo);
               }}
             />
-          )}{" "}
+          )}
           <span>{localLikes}</span>
+          </div>
           {user.uId === tweetInfo.user.uId && (
             <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
           )}

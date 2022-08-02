@@ -7,4 +7,5 @@ export const FeedStyled = styled.div`
   gap: 2px;
   background-color: ${lightTheme.secondary}; 
   border-radius: 2px;
+  height: 100%;
 `

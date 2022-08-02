@@ -8,6 +8,7 @@ type Props = {
 }
 
 export const Button = styled.button<Props>`
+font-weight: bold;
 margin: 4px;
 padding: 12px 24px;
 border-radius: 20px;

@@ -44,15 +44,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 //If I want to use the real deal instead of the emulator
-//const db  = getFirestore(app);
-const db = getFirestore();
-connectFirestoreEmulator(db, "localhost", 8080);
+const db = getFirestore(app);
+// const db = getFirestore();
+// connectFirestoreEmulator(db, "localhost", 8080);
 export const auth = getAuth();
 export const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
 
 export const addUserToDB = async (user: DBUser) => {
   try {
+    console.log("accesing db");
     const userDoc = doc(db, "users/" + user.uId);
     let toAdd: any = user;
     delete toAdd.uId;
@@ -67,20 +68,23 @@ export const addUserToDB = async (user: DBUser) => {
 export const getUserFromDB = async (
   uId: string
 ): Promise<DBUser | undefined> => {
+  console.log("accesing db");
   const userDocRef = doc(db, "users/" + uId);
   const userDoc = await getDoc(userDocRef);
 
   let data = userDoc.data();
   if (!data) return undefined;
-  const img = await getUserProPic(uId);
+
   let user = {
     uId,
     ...data,
     info: {
       ...data.info,
-      img,
     },
   } as DBUser;
+  const img = await getUserProPic(user);
+  user.info.img = img;
+
   return user;
 };
 
@@ -88,6 +92,7 @@ export const getUserFromDB = async (
 //Returns the new user
 export const signInUser = async (): Promise<boolean | null> => {
   try {
+    console.log("accesing db");
     let result = await signInWithPopup(auth, provider);
     let { isNewUser } = getAdditionalUserInfo(result) as AdditionalUserInfo;
     return isNewUser;
@@ -106,27 +111,86 @@ export const createTweet = async (
   user: DBUser,
   tweetContent: string
 ): Promise<TweetInfo> => {
+  console.log("accesing db");
   let newTweet = {
     user: user.uId,
     tweetContent: tweetContent,
     time: serverTimestamp(),
     likes: [],
+    responses: [],
   };
   const newDoc = await addDoc(collection(db, "tweets"), newTweet);
   return { ...newTweet, user: user, time: "Just Now", id: newDoc.id };
 };
 
-export const getUserProPic = async (uId: string): Promise<string> => {
-  if (uId === '1') return BlankProfile;
-  return getDownloadURL(ref(storage, uId)).then(
+export const createResponse = async (
+  user: DBUser,
+  respondingTo: TweetInfo,
+  responseContent: string
+): Promise<TweetInfo> => {
+  console.log("accesing db");
+  let response = {
+    user: user.uId,
+    tweetContent: responseContent,
+    time: serverTimestamp(),
+    likes: [],
+    responses: [],
+  };
+  const newDoc = await addDoc(collection(db, "responses"), response);
+  await addResponseToTweet(newDoc.id, respondingTo);
+  return { ...response, user: user, time: "Just Now", id: newDoc.id };
+};
+
+export const addResponseToTweet = async (
+  responseId: string,
+  respondingTo: TweetInfo
+): Promise<void> => {
+  let prev = respondingTo.responses ? respondingTo.responses : [];
+  let tweet: any = {
+    ...respondingTo,
+    user: respondingTo.user.uId,
+    responses: [...prev, responseId],
+  };
+  delete tweet.time;
+  const newDoc = await updateDoc(doc(db, "tweets/" + respondingTo.id), tweet);
+};
+
+export const getNResponses = async (
+  respondingTo: TweetInfo,
+  number: number
+): Promise<TweetInfo[]> => {
+  console.log("accesing db");
+  let out: Promise<TweetInfo | undefined>[] = [];
+  let numberOut = respondingTo.responses
+    ? Math.min(respondingTo.responses.length, number)
+    : 0;
+  for (let i = 0; i < numberOut; i++) {
+    let responseDocRef = doc(db, "responses/" + respondingTo.responses[i]);
+    let responseRef = await getDoc(responseDocRef);
+    out.push(getTweetFromDoc(responseRef));
+  }
+
+  let filtered = Promise.all(out).then((result) =>
+    result.filter((result) => {
+      return result !== undefined;
+    })
+  );
+  return (await filtered) as TweetInfo[];
+};
+
+export const getUserProPic = async (user: DBUser): Promise<string> => {
+  console.log("accesing db");
+  if (!user.info.hasImg) return BlankProfile;
+  return await getDownloadURL(ref(storage, user.uId)).then(
     (url) => url,
-    () => BlankProfile
+    (err) => BlankProfile
   );
 };
 
 export const getTweetFromID = async (
   tweetID: string
 ): Promise<TweetInfo | undefined> => {
+  console.log("accesing db");
   const tweetDocRef = doc(db, "tweets/" + tweetID);
   const tweetDoc = await getDoc(tweetDocRef);
   return await getTweetFromDoc(tweetDoc);
@@ -136,6 +200,7 @@ export const likeTweet = async (
   user: DBUser,
   tweet: TweetInfo
 ): Promise<void> => {
+  console.log("accesing db");
   let newTweet: any = {
     ...tweet,
     likes: [...tweet.likes, user.uId],
@@ -149,6 +214,7 @@ export const unlikeTweet = async (
   user: DBUser,
   tweet: TweetInfo
 ): Promise<void> => {
+  console.log("accesing db");
   let newTweet: any = {
     ...tweet,
     likes: tweet.likes.filter((like) => like !== user.uId),
@@ -159,6 +225,7 @@ export const unlikeTweet = async (
 };
 
 export const deleteTweetFromDB = async (id: string) => {
+  console.log("accesing db");
   const tweetRef = doc(db, "tweets", id);
   deleteDoc(tweetRef);
 };
@@ -186,6 +253,7 @@ export const getTweetFromDoc = async (
 };
 
 export const getNTweets = async (number: number): Promise<TweetInfo[]> => {
+  console.log("accesing db");
   let out: Promise<TweetInfo | undefined>[] = [];
   const tweetsRef = collection(db, "tweets");
   const tweetsQuery = query(tweetsRef, orderBy("time", "desc"), limit(number));

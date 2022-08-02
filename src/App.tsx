@@ -11,17 +11,10 @@ import {
   signOutUser,
 } from "./Utility/FirebaseFunctions";
 import BlankProfile from "./img/blank-profile.webp";
+import { AppStyled } from "./Components/Styled/App.styled";
 
-export const defaultUser = {
-  userName: "guest",
-  userAt: "test",
-  uId: "1",
-  info: {
-    img: BlankProfile,
-  },
-};
 
-export const UserContext = React.createContext<User>(defaultUser);
+
 
 export const TriggerUserUpdate = React.createContext(() => {});
 
@@ -36,8 +29,21 @@ export type UserDetails = {
   bio?: string;
   website?: string;
   img: string;
+  hasImg?: boolean
 };
 
+
+export const defaultUser: User = {
+  userName: "guest",
+  userAt: "test",
+  uId: "1",
+  info: {
+    hasImg: false,
+    img: BlankProfile,
+  },
+};
+
+export const UserContext = React.createContext<User>(defaultUser);
 
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
@@ -91,7 +97,7 @@ export default function App() {
   }, [gotAuth]);
 
   return (
-    <div style={{ height: "100%",}}>
+    <AppStyled>
       <TriggerUserUpdate.Provider value={updateUser}>
         <UserContext.Provider value={currentUser ? currentUser : defaultUser}>
           <BrowserRouter >
@@ -102,6 +108,6 @@ export default function App() {
           </BrowserRouter>
         </UserContext.Provider>
       </TriggerUserUpdate.Provider>
-    </div>
+    </AppStyled>
   );
 }

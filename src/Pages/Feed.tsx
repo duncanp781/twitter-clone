@@ -13,7 +13,8 @@ export type TweetInfo = {
   tweetContent: string;
   time: string;
   id: string;
-  likes: string[]
+  likes: string[];
+  responses: string[];
 };
 
 function Feed() {
@@ -26,7 +27,7 @@ function Feed() {
         <NewTweet
           submit={async (tweetContent: string) => {
             let newTweet = await createTweet(user, tweetContent);
-            setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
+            setTweetsToDisplay([newTweet]);
           }}
         />
         <TweetDisplay

@@ -25,10 +25,9 @@ import { UserContext } from "../App";
 
 type Props = {
   tweetInfo: TweetInfo;
-  removeTweetFromFeed: (arg0: string) => void;
 };
 
-function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
+function SingleTweet({ tweetInfo }: Props) {
   const navigate = useNavigate();
   const user = useContext(UserContext);
   const [liked, setLiked] = useState(tweetInfo.likes.includes(user.uId));
@@ -46,12 +45,10 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
 
   const remove = () => {
     deleteTweetFromDB(tweetInfo.id);
-    removeTweetFromFeed(tweetInfo.id);
   };
 
   return (
     <TweetStyled
-      hoverable
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           navigate("/tweet/" + tweetInfo.id);
@@ -81,6 +78,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
           <SubtitleText>{tweetInfo.time}</SubtitleText>
         </TweetHead>
         <div
+          style={{ fontSize: "1.5rem" }}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               navigate("/tweet/" + tweetInfo.id);
@@ -127,4 +125,4 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   );
 }
 
-export default Tweet;
+export default SingleTweet;

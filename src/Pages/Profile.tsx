@@ -103,7 +103,7 @@ export default function Profile() {
           <NewTweet
             submit={async (tweetContent: string) => {
               let newTweet = await createTweet(user, tweetContent);
-              setTweetsToDisplay([newTweet, ...tweetsToDisplay]);
+              setTweetsToDisplay([newTweet]);
             }}
           />
         ) : null}

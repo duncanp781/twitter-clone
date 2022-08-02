@@ -4,6 +4,8 @@ import { User, UserContext } from "./App";
 import Feed from "./Pages/Feed";
 import LogIn from "./Pages/LogIn";
 import Profile from "./Pages/Profile";
+import SingleTweetPage from "./Pages/SingleTweetPage";
+import SingleTweet from "./Pages/SingleTweetPage";
 
 type Props = {
   setShowHeader: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +27,7 @@ function RouteSwitch({ setShowHeader }: Props) {
   }, [location, setShowHeader]);
   return (
     <Routes>
-      <Route
+    <Route
         path="/"
         element={
           user.uId === "1" ? <Navigate to="login" /> : <Navigate to="feed" />
@@ -34,6 +36,7 @@ function RouteSwitch({ setShowHeader }: Props) {
       <Route path="/login" element={<LogIn />} />
       <Route path="/feed" element={<Feed />} />
       <Route path ='/user/:uId' element = {<Profile/>}/>
+      <Route path = '/tweet/:tweetId' element = {<SingleTweetPage/>}/>
     </Routes>
   );
 }

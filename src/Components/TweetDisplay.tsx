@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TweetInfo } from "../Pages/Feed";
 import Tweet from "./Tweet";
-import uniqid from "uniqid";
 
 type Props = {
   getMethod: () => Promise<TweetInfo[]>;
@@ -18,7 +17,7 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
   useEffect(() => {
     async function initTweets() {
       let out = await getMethod();
-      
+
       setToDisplay([...toDisplay, ...out]);
       setTriedLoad(true);
     }
@@ -40,16 +39,17 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
 
   return (
     <>
-      {
-        toDisplay.map((tweet) => {
-          return triedLoad && (
+      {toDisplay.map((tweet) => {
+        return (
+          triedLoad && (
             <Tweet
               tweetInfo={tweet}
               removeTweetFromFeed={removeTweetFromFeed}
               key={tweet.id}
             />
-          );
-        })}
+          )
+        );
+      })}
     </>
   );
 }

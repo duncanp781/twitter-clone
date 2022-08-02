@@ -5,17 +5,17 @@ type Props = {
   hoverable?: boolean,
 }
 
-export const HeaderStyled = styled.header`
+export const HeaderStyled = styled.div`
   height: 100vh;
-  max-width: 30%;
-  width: 400px;
-  position: fixed;
+  max-width: 20%;
+  min-width: 300px;
+  position: sticky;
   padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  border-right: 2px solid ${lightTheme.secondary};
+  border-left: 2px solid ${lightTheme.secondary};
 `;
 export const Logo = styled.span`
   font-weight: bold;

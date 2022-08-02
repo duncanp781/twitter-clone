@@ -6,7 +6,5 @@ export const FeedStyled = styled.div`
   flex-direction: column;
   gap: 2px;
   background-color: ${lightTheme.secondary}; 
-  padding: 2px;
   border-radius: 2px;
-  margin: 8px;
 `

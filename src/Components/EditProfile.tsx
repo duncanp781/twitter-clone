@@ -1,7 +1,11 @@
 import { ref, uploadBytes } from "firebase/storage";
 import React, { useContext } from "react";
 import { TriggerUserUpdate, UserContext } from "../App";
-import { addUserToDB, storage } from "../Utility/FirebaseFunctions";
+import {
+  addUserToDB,
+  getUserProPic,
+  storage,
+} from "../Utility/FirebaseFunctions";
 import Modal from "./Modal";
 import { Button } from "./Styled/Button.styled";
 import { TweetField } from "./Styled/Tweet.styled";
@@ -38,11 +42,17 @@ export default function EditProfile({ close, update }: Props) {
           const userProPicInput = form.elements.namedItem(
             "userProPic"
           ) as HTMLInputElement;
+
+          let gotProPic = false;
+          let newProPic;
           const userProPics = userProPicInput.files;
-          let userProPic = userProPics ? userProPics[0] : null ;
-          if(userProPic && userProPic.size < 3145728){
+          let userProPic = userProPics ? userProPics[0] : null;
+          if (userProPic && userProPic.size < 3145728) {
             const storageRef = ref(storage, user.uId);
-            uploadBytes(storageRef, userProPic);
+            uploadBytes(storageRef, userProPic).then(() => {
+              triggerUpdate();
+            });
+            gotProPic = true;
           }
 
           const editedUser = {
@@ -52,12 +62,19 @@ export default function EditProfile({ close, update }: Props) {
             info: {
               ...user.info,
               bio: userBioInput.value,
+              hasImg: user.info.hasImg || gotProPic,
             },
           };
-          addUserToDB(editedUser);
-          triggerUpdate();
-          update();
-          close();
+          getUserProPic(editedUser)
+            .then((result) => {
+              editedUser.info.img = result;
+            })
+            .then((result) => {
+              addUserToDB(editedUser);
+              triggerUpdate();
+              update();
+              close();
+            });
         }}
       >
         <TextInput
@@ -74,7 +91,7 @@ export default function EditProfile({ close, update }: Props) {
           placeholder="Write a little about yourself"
         ></TweetField>
         <label htmlFor="userProPic">
-          Upload a profile picture: (Max Size 3MB) 
+          Upload a profile picture: (Max Size 3MB)
           <input type="file" id="userProPic" accept="image/*" />
         </label>
         <div style={{ display: "flex", justifyContent: "right", gap: "8px" }}>

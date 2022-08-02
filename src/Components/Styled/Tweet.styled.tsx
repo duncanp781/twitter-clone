@@ -58,6 +58,9 @@ export const BottomRow = styled.div`
 `
 export const TweetIcon = styled.img`
   height: 2rem;
+  &:hover{
+    cursor: pointer;
+  }
 `
 
 export {}

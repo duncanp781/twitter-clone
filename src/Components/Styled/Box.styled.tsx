@@ -7,23 +7,22 @@ type Props  = {
 }
 
 export const Box = styled.div<Props>`
-  background-color: ${lightTheme.main};
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   &:hover{
-    background-color: ${(props) => props.hoverable ? lightTheme.light : lightTheme.main }; 
+    background-color: ${(props) => props.hoverable ? lightTheme.light : 'white' }; 
   }
 `
 
 export const TweetStyled = styled.div<Props>`
-background-color: ${lightTheme.main};
+background-color: white;
 padding: 16px;
 display: grid;
 grid-template-columns: max-content 1fr;
 gap: 8px;
 &:hover{
-  background-color: ${(props) => props.hoverable ? lightTheme.light: lightTheme.main };
+  background-color: ${(props) => props.hoverable ? lightTheme.light: 'white' };
 }
 `

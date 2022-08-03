@@ -36,7 +36,8 @@ border: none;
 export const ProPicContainer = styled.div<Props>`
 background-color: white;
 height: ${props => props.large ? '6rem' : '2.5rem'};
-width: ${props => props.large ? '6rem' : '2.5rem'};
+min-width: ${props => props.large ? '6rem' : '2.5rem'};
+max-width: ${props => props.large ? '6rem' : '2.5rem'};
 overflow: hidden;
 display: flex;
 align-items: center;

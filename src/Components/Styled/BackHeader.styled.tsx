@@ -7,6 +7,9 @@ export const BackHeaderStyled = styled.div`
   justify-content: left;
   gap: 16px;
   padding: 4px 16px;
+  position: sticky;
+  top: 0;
+  background-color: rgb(255,255,255, 0.95);
 `
 
 

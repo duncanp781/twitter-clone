@@ -15,10 +15,11 @@ border-radius: 20px;
 border: ${props => props.cancel ? `2px solid ${lightTheme.splash}` : 'none'};
 background-color: ${props => props.cancel? 'transparent' : lightTheme.splash};
 color: ${props => props.cancel? lightTheme.splash : lightTheme.main};
-&:active::not(disabled){
-  background-color: gray;
-}
-&:hover{
+&:hover:enabled{
   cursor: pointer;
+  background-color: #1B99D9;
+}
+&:disabled{
+  background-color: #55CCFF;
 }
 `

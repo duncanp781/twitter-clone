@@ -8,4 +8,5 @@ export const FeedStyled = styled.div`
   background-color: ${lightTheme.secondary}; 
   border-radius: 2px;
   height: 100%;
+  min-height: 100vh;
 `

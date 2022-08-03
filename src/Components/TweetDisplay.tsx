@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { User } from "../App";
 import { TweetInfo } from "../Pages/Feed";
+import { likeTweet, unlikeTweet } from "../Utility/FirebaseFunctions";
+import Loading from "./Loading";
+import { Button } from "./Styled/Button.styled";
 import Tweet from "./Tweet";
 
 type Props = {
   getMethod: () => Promise<TweetInfo[]>;
   extraTweets?: TweetInfo[];
   ready: boolean;
+  likeMethod?: (arg0: User, arg1: TweetInfo) => Promise<void>
+  unlikeMethod?: (arg0: User, arg1: TweetInfo) => Promise<void>;
 };
 
-export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
+export default function TweetDisplay({ getMethod, extraTweets, ready, likeMethod = likeTweet, unlikeMethod = unlikeTweet }: Props) {
   const [toDisplay, setToDisplay] = useState<TweetInfo[]>(
     extraTweets ? extraTweets : []
   );
@@ -39,17 +45,19 @@ export default function TweetDisplay({ getMethod, extraTweets, ready }: Props) {
 
   return (
     <>
-      {toDisplay.map((tweet) => {
+      {triedLoad? toDisplay.map((tweet) => {
         return (
           triedLoad && (
             <Tweet
               tweetInfo={tweet}
               removeTweetFromFeed={removeTweetFromFeed}
               key={tweet.id}
+              likeMethod = {likeMethod}
+              unlikeMethod = {unlikeMethod}
             />
           )
         );
-      })}
+      }) : <Loading/>}
     </>
   );
 }

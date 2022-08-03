@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router";
-import { UserContext } from "../App";
+import { useLocation, useNavigate } from "react-router";
+import { TriggerUserUpdate, UserContext } from "../App";
 import { Button } from "../Components/Styled/Button.styled";
 import {
   HeaderStyled,
@@ -21,16 +21,20 @@ import TwitterLogo from '../img/Twitter-logo.svg';
 import Modal from "../Components/Modal";
 import NewTweet from "../Components/NewTweet";
 import { createTweet } from "../Utility/FirebaseFunctions";
+import { TweetInfo } from "./Feed";
 
 type Props = {
   signOut: () => void;
   hasUser: boolean;
+  setExtraTweet: any
 };
 
-function Header({ signOut, hasUser }: Props) {
+function Header({ signOut, hasUser, setExtraTweet }: Props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showTweetModal, setShowTweetModal] = useState(false);
   const user = useContext(UserContext);
+  const update = useContext(TriggerUserUpdate);
   return (
     <>
       {showTweetModal && (
@@ -38,6 +42,12 @@ function Header({ signOut, hasUser }: Props) {
           <NewTweet
             submit={async (tweetContent: string) => {
               let newTweet = await createTweet(user, tweetContent);
+              if (location.pathname === '/feed'){
+                setExtraTweet([newTweet]);
+              }else{
+                navigate('/feed');
+              }
+              setShowTweetModal(false);
             }}
           />
         </Modal>

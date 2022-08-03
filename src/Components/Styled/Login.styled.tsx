@@ -4,7 +4,7 @@ export const TwoCol = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 export const ColSide = styled.div`

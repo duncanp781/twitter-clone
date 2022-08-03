@@ -12,9 +12,26 @@ import {
 } from "./Utility/FirebaseFunctions";
 import BlankProfile from "./img/blank-profile.webp";
 import { AppStyled } from "./Components/Styled/App.styled";
+import { TweetInfo } from "./Pages/Feed";
 
 
 
+
+
+// TODO:
+// DONE: Make the tweet post modal also update local tweets
+// DONE: Make liking replies work, or remove it
+// DONE: Add loading screen
+
+// Possibilites:
+// Small:
+// Rework trash to be in triple dots in top left of tweet
+// Rework date format
+// Big:  
+// Add Following
+// Add Banner Images
+// Add hover preview for profiles
+// Add Search (for exact name or at)
 
 export const TriggerUserUpdate = React.createContext(() => {});
 
@@ -45,13 +62,15 @@ export const defaultUser: User = {
 
 export const UserContext = React.createContext<User>(defaultUser);
 
+export const ExtraTweetContext = React.createContext<TweetInfo[]>([]);
+
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<User>(defaultUser);
   const [gotAuth, setGotAuth] = useState(false);
+  const [extraTweet, setExtraTweet] = useState<TweetInfo[]>([]);
 
   const updateUser = async () => {
-    console.log('updating user in context');
     let realUser = await getUserFromDB(currentUser.uId);
     if (realUser && realUser !== currentUser) {
       setCurrentUser(realUser);
@@ -59,14 +78,12 @@ export default function App() {
   };
 
   useEffect(() => {
-    console.log("The current user is, ", currentUser);
   }, [currentUser]);
 
   useEffect(() => {
     
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if(!gotAuth){
-      console.log("auth state changed");
       if (user) {
         //If there is an account signed in, check if it is an existing user.
         //If not, add unknown information
@@ -98,16 +115,18 @@ export default function App() {
 
   return (
     <AppStyled>
+      <ExtraTweetContext.Provider value = {extraTweet}>
       <TriggerUserUpdate.Provider value={updateUser}>
         <UserContext.Provider value={currentUser ? currentUser : defaultUser}>
           <BrowserRouter >
             {showHeader && (
-              <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} />
+              <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} setExtraTweet = {setExtraTweet}/>
             )}
             <RouteSwitch setShowHeader={setShowHeader} />
           </BrowserRouter>
         </UserContext.Provider>
       </TriggerUserUpdate.Provider>
+      </ExtraTweetContext.Provider>
     </AppStyled>
   );
 }

@@ -20,7 +20,7 @@ export const ModalContainerStyled = styled.div`
   left: 50%;
   transform: translateY(-50%) translateX(-50%);
   padding: 24px;
-  background-color: ${lightTheme.main};
+  background-color: white;
   display: flex;
   flex-direction: column;
   gap: 8px;

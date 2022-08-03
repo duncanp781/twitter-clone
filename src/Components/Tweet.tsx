@@ -22,15 +22,17 @@ import FilledHeart from "../img/heart_filled.svg";
 import Comment from '../img/comment.svg';
 import { useLocation, useNavigate } from "react-router";
 import { SubtitleText } from "./Styled/Text.styled";
-import { UserContext } from "../App";
+import { User, UserContext } from "../App";
 import { lightTheme } from "./Styled/Themes";
 
 type Props = {
   tweetInfo: TweetInfo;
   removeTweetFromFeed: (arg0: string) => void;
+  likeMethod: (arg0: User, arg1: TweetInfo) => Promise<void>;
+  unlikeMethod: (arg0: User, arg1: TweetInfo) => Promise<void>;
 };
 
-function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
+function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useContext(UserContext);
@@ -38,6 +40,12 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
   const [localLikes, setLocalLikes] = useState(tweetInfo.likes.length);
   const [proPic, setProPic] = useState(BlankProfile);
   const [triedLoad, setTriedLoad] = useState(false);
+
+  const goToTweetPage = () => {
+    if(!location.pathname.includes('/tweet')){
+      navigate('/tweet/' + tweetInfo.id);
+    }
+  }
   useEffect(() => {
     if (!triedLoad) {
       getUserProPic(tweetInfo.user).then((url) => {
@@ -57,7 +65,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
       hoverable
       onClick={(e) => {
         if (e.target === e.currentTarget) {
-          navigate("/tweet/" + tweetInfo.id);
+          goToTweetPage();
         }
       }}
     >
@@ -68,7 +76,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
         <TweetHead
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              navigate("/tweet/" + tweetInfo.id);
+              goToTweetPage();
             }
           }}
         >
@@ -86,7 +94,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
         <div
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              navigate("/tweet/" + tweetInfo.id);
+              goToTweetPage();
             }
           }}
         >
@@ -95,13 +103,13 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
         <BottomRow
           onClick={(e) => {
             if (e.target === e.currentTarget) {
-              navigate("/tweet/" + tweetInfo.id);
+              goToTweetPage();
             }
           }}
         >
-          {location.pathname === '/feed' ? 
+          {location.pathname === '/feed' || location.pathname.includes('/user') ? 
             <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
-              <TweetIcon src = {Comment} alt = 'View Replies' onClick = {() => navigate('/tweet/' + tweetInfo.id)}/>
+              <TweetIcon src = {Comment} alt = 'View Replies' onClick = {goToTweetPage}/>
               <span>{tweetInfo.responses.length}</span>
             </div> : null}
             <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
@@ -112,7 +120,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
               onClick={async () => {
                 setLiked(false);
                 setLocalLikes(localLikes - 1);
-                await unlikeTweet(user, tweetInfo);
+                await unlikeMethod(user, tweetInfo);
               }}
             />
           ) : (
@@ -122,7 +130,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed }: Props) {
               onClick={async () => {
                 setLiked(true);
                 setLocalLikes(localLikes + 1);
-                await likeTweet(user, tweetInfo);
+                await likeMethod(user, tweetInfo);
               }}
             />
           )}

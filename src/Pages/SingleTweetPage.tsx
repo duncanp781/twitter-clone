@@ -34,6 +34,18 @@ function SingleTweetPage() {
     }
   }, [params.tweetId, currentTweet]);
 
+  const unlikeLocal = (tweet: TweetInfo) => {
+    setCurrentTweet((oldTweet) => {
+      if (oldTweet) {
+        oldTweet.likes = tweet.likes.filter(
+          (like: string) => like !== user.uId
+        );
+        return oldTweet;
+      }
+      return null;
+    });
+  };
+
   return (
     <Page>
       <BackHeader>
@@ -42,7 +54,7 @@ function SingleTweetPage() {
       {!!currentTweet ? (
         <>
           <FeedStyled>
-            <SingleTweet tweetInfo={currentTweet} />
+            <SingleTweet tweetInfo={currentTweet} unlikeLocal={unlikeLocal} />
             <NewTweet
               submit={(responseContent) => {
                 createResponse(user, currentTweet, responseContent).then(
@@ -57,12 +69,14 @@ function SingleTweetPage() {
               getMethod={() => getNResponses(currentTweet, 10)}
               ready={!!currentTweet}
               extraTweets={latestResponse}
-              likeMethod = {likeResponse}
-              unlikeMethod = {unlikeResponse}
+              likeMethod={likeResponse}
+              unlikeMethod={unlikeResponse}
             />
           </FeedStyled>
         </>
-      ) : <Loading/>}
+      ) : (
+        <Loading />
+      )}
     </Page>
   );
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { User } from "../App";
+import React, { useContext, useEffect, useState } from "react";
+import { User, UserContext } from "../App";
 import { TweetInfo } from "../Pages/Feed";
 import { likeTweet, unlikeTweet } from "../Utility/FirebaseFunctions";
 import Loading from "./Loading";
@@ -10,15 +10,22 @@ type Props = {
   getMethod: () => Promise<TweetInfo[]>;
   extraTweets?: TweetInfo[];
   ready: boolean;
-  likeMethod?: (arg0: User, arg1: TweetInfo) => Promise<void>
+  likeMethod?: (arg0: User, arg1: TweetInfo) => Promise<void>;
   unlikeMethod?: (arg0: User, arg1: TweetInfo) => Promise<void>;
 };
 
-export default function TweetDisplay({ getMethod, extraTweets, ready, likeMethod = likeTweet, unlikeMethod = unlikeTweet }: Props) {
+export default function TweetDisplay({
+  getMethod,
+  extraTweets,
+  ready,
+  likeMethod = likeTweet,
+  unlikeMethod = unlikeTweet,
+}: Props) {
   const [toDisplay, setToDisplay] = useState<TweetInfo[]>(
     extraTweets ? extraTweets : []
   );
   const [triedLoad, setTriedLoad] = useState(false);
+  const user = useContext(UserContext);
 
   useEffect(() => {
     async function initTweets() {
@@ -43,21 +50,38 @@ export default function TweetDisplay({ getMethod, extraTweets, ready, likeMethod
     setToDisplay(toDisplay.filter((tweet) => tweet.id !== id));
   };
 
+  const unlikeLocal = (tweet: TweetInfo) => {
+    setToDisplay(prevDisplay => {
+      for (let oldTweet of prevDisplay){
+        if (oldTweet.id === tweet.id ){
+          oldTweet.likes = tweet.likes.filter((like: string) => like !== user.uId);
+        }
+      }
+      return prevDisplay;
+    })
+    
+  };
+
   return (
     <>
-      {triedLoad? toDisplay.map((tweet) => {
-        return (
-          triedLoad && (
-            <Tweet
-              tweetInfo={tweet}
-              removeTweetFromFeed={removeTweetFromFeed}
-              key={tweet.id}
-              likeMethod = {likeMethod}
-              unlikeMethod = {unlikeMethod}
-            />
-          )
-        );
-      }) : <Loading/>}
+      {triedLoad ? (
+        toDisplay.map((tweet) => {
+          return (
+            triedLoad && (
+              <Tweet
+                tweetInfo={tweet}
+                removeTweetFromFeed={removeTweetFromFeed}
+                key={tweet.id}
+                likeMethod={likeMethod}
+                unlikeMethod={unlikeMethod}
+                unlikeLocal = {unlikeLocal}
+              />
+            )
+          );
+        })
+      ) : (
+        <Loading />
+      )}
     </>
   );
 }

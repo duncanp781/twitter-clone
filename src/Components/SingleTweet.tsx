@@ -25,9 +25,10 @@ import { UserContext } from "../App";
 
 type Props = {
   tweetInfo: TweetInfo;
+  unlikeLocal: (arg0: TweetInfo) => void;
 };
 
-function SingleTweet({ tweetInfo }: Props) {
+function SingleTweet({ tweetInfo, unlikeLocal }: Props) {
   const navigate = useNavigate();
   const user = useContext(UserContext);
   const [liked, setLiked] = useState(tweetInfo.likes.includes(user.uId));
@@ -101,6 +102,7 @@ function SingleTweet({ tweetInfo }: Props) {
               onClick={async () => {
                 setLiked(false);
                 setLocalLikes(localLikes - 1);
+                unlikeLocal(tweetInfo);
                 await unlikeTweet(user, tweetInfo);
               }}
             />

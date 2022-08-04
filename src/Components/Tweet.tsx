@@ -30,9 +30,10 @@ type Props = {
   removeTweetFromFeed: (arg0: string) => void;
   likeMethod: (arg0: User, arg1: TweetInfo) => Promise<void>;
   unlikeMethod: (arg0: User, arg1: TweetInfo) => Promise<void>;
+  unlikeLocal: (arg0: TweetInfo) => void
 };
 
-function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod}: Props) {
+function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod, unlikeLocal}: Props) {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useContext(UserContext);
@@ -119,6 +120,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod}: Prop
               alt="liked tweet"
               onClick={async () => {
                 setLiked(false);
+                unlikeLocal(tweetInfo);
                 setLocalLikes(localLikes - 1);
                 await unlikeMethod(user, tweetInfo);
               }}

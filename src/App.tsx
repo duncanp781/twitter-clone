@@ -22,11 +22,18 @@ import { TweetInfo } from "./Pages/Feed";
 // DONE: Make the tweet post modal also update local tweets
 // DONE: Make liking replies work, or remove it
 // DONE: Add loading screen
+// Add max length for usernames /@s  bios
+// Fix infinite like glitch (replicated by liking/unliking then switching pages)
+// Fix text overflow on tweets/usernames (add ellipsis - css tricks article)
+// Fix image on login page - probably just remove? it slows it down a lot
+// Add Proper deleting on single tweet pages - navigate back a page
+// Add deleting responses to tweets when deleting tweets
 
 // Possibilites:
 // Small:
 // Rework trash to be in triple dots in top left of tweet
 // Rework date format
+// Add animation on hover for styled components (buttons, icons etc.)
 // Big:  
 // Add Following
 // Add Banner Images

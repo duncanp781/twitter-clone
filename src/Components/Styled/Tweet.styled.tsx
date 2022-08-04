@@ -7,6 +7,10 @@ type Props = {
 }
 
 export const UserName = styled.span<Props>`
+overflow-x: hidden;
+white-space: nowrap;
+text-overflow:ellipsis;
+width: 100%;
   font-weight: bold;
   font-size: ${props => props.large? '1.5rem' : '1rem'};
   &:hover{
@@ -18,6 +22,7 @@ export const UserName = styled.span<Props>`
 
 
 export const TweetHead = styled.div`
+  width: 100%;
   display: grid;
   grid-template-columns: max-content max-content 1fr;
   text-align: right;

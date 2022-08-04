@@ -17,6 +17,9 @@ export const Box = styled.div<Props>`
 `
 
 export const TweetStyled = styled.div<Props>`
+overflow-wrap: break-word;
+overflow: hidden;
+width: 100%;
 background-color: white;
 padding: 16px;
 display: grid;

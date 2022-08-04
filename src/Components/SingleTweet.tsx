@@ -58,7 +58,7 @@ function SingleTweet({ tweetInfo }: Props) {
       <ProPicContainer>
         <ProPic src={proPic} alt={"profile"} />
       </ProPicContainer>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", overflowWrap: 'break-word', maxWidth: '100%', overflow: 'hidden',}}>
         <TweetHead
           onClick={(e) => {
             if (e.target === e.currentTarget) {

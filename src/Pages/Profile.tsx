@@ -80,7 +80,7 @@ export default function Profile() {
         </ProfileHeader>
         <div>
           <UserInfoStyled>
-            <span>
+            <span style = {{width: '100%', overflow: 'hidden', textOverflow: 'ellipsis',}}>
               <UserName large>{profileUser.userName}</UserName>
             {profileUser.uId === user.uId && <img
               src={EditIcon}

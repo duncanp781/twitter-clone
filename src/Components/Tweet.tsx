@@ -72,7 +72,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod}: Prop
       <ProPicContainer>
         <ProPic src={proPic} alt={"profile"} />
       </ProPicContainer>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", overflowWrap: 'break-word', maxWidth: '100%', overflow: 'hidden',}}>
         <TweetHead
           onClick={(e) => {
             if (e.target === e.currentTarget) {
@@ -91,7 +91,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod}: Prop
           <SubtitleText>@{tweetInfo.user.userAt}</SubtitleText>
           <SubtitleText>{tweetInfo.time}</SubtitleText>
         </TweetHead>
-        <div
+        <div 
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               goToTweetPage();

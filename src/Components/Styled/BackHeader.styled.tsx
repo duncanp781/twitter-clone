@@ -2,6 +2,11 @@ import styled from 'styled-components';
 import { lightTheme } from './Themes';
 
 export const BackHeaderStyled = styled.div`
+width: 100%;
+overflow: hidden;
+white-space: nowrap;
+display: block;
+text-overflow: ellipsis;
   display: flex;
   align-items: center;
   justify-content: left;

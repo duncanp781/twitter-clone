@@ -11,8 +11,9 @@ export const Box = styled.div<Props>`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: background-color 0.3s;
   &:hover{
-    background-color: ${(props) => props.hoverable ? lightTheme.light : 'white' }; 
+    background-color: ${(props) => props.hoverable ? lightTheme.extralight : 'white' }; 
   }
 `
 
@@ -25,7 +26,8 @@ padding: 16px;
 display: grid;
 grid-template-columns: max-content 1fr;
 gap: 8px;
+transition: background-color 0.3s;
 &:hover{
-  background-color: ${(props) => props.hoverable ? lightTheme.light: 'white' };
+  background-color: ${(props) => props.hoverable ? lightTheme.extralight: 'white' };
 }
 `

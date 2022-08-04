@@ -8,6 +8,7 @@ import {
   BottomRow,
   TweetIcon,
   ProPicContainer,
+  TweetInfoContainer,
 } from "./Styled/Tweet.styled";
 import Trash from "../img/trash.svg";
 import {
@@ -96,32 +97,38 @@ function SingleTweet({ tweetInfo, unlikeLocal }: Props) {
             }
           }}
         >
-          {liked ? (
-            <TweetIcon
-              src={FilledHeart}
-              alt="liked tweet"
-              onClick={async () => {
-                setLiked(false);
-                setLocalLikes(localLikes - 1);
-                unlikeLocal(tweetInfo);
-                await unlikeTweet(user, tweetInfo);
-              }}
-            />
-          ) : (
-            <TweetIcon
-              src={Heart}
-              alt="like tweet"
-              onClick={async () => {
-                setLiked(true);
-                setLocalLikes(localLikes + 1);
-                await likeTweet(user, tweetInfo);
-              }}
-            />
-          )}{" "}
-          <span>{localLikes}</span>
-          {user.uId === tweetInfo.user.uId && (
-            <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
-          )}
+          <TweetInfoContainer>
+            {liked ? (
+              <TweetIcon
+                src={FilledHeart}
+                alt="liked tweet"
+                onClick={async () => {
+                  setLiked(false);
+                  setLocalLikes(localLikes - 1);
+                  unlikeLocal(tweetInfo);
+                  await unlikeTweet(user, tweetInfo);
+                }}
+              />
+            ) : (
+              <TweetIcon
+                src={Heart}
+                alt="like tweet"
+                onClick={async () => {
+                  setLiked(true);
+                  setLocalLikes(localLikes + 1);
+                  await likeTweet(user, tweetInfo);
+                }}
+              />
+            )}{" "}
+            <span>{localLikes}</span>
+          </TweetInfoContainer>
+          
+            {user.uId === tweetInfo.user.uId&& (
+              <TweetInfoContainer>
+              <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
+              </TweetInfoContainer>
+            )}
+          
         </BottomRow>
       </div>
     </TweetStyled>

@@ -23,11 +23,11 @@ import { TweetInfo } from "./Pages/Feed";
 // DONE: Make liking replies work, or remove it
 // DONE: Add loading screen
 // Add max length for usernames /@s  bios
-// Fix infinite like glitch (replicated by liking/unliking then switching pages)
-// Fix text overflow on tweets/usernames (add ellipsis - css tricks article)
+// DONE: Fix infinite like glitch (replicated by liking/unliking then switching pages)
+// DONE: Fix text overflow on tweets/usernames (add ellipsis - css tricks article)
 // Fix image on login page - probably just remove? it slows it down a lot
-// Add Proper deleting on single tweet pages - navigate back a page
-// Add deleting responses to tweets when deleting tweets
+// DONE: Add Proper deleting on single tweet pages - navigate back a page
+// DONE: Add deleting responses to tweets when deleting tweets
 
 // Possibilites:
 // Small:

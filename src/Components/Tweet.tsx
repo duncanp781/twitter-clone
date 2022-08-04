@@ -8,6 +8,7 @@ import {
   BottomRow,
   TweetIcon,
   ProPicContainer,
+  TweetInfoContainer,
 } from "./Styled/Tweet.styled";
 import Trash from "../img/trash.svg";
 import {
@@ -109,11 +110,11 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod, unlik
           }}
         >
           {location.pathname === '/feed' || location.pathname.includes('/user') ? 
-            <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
+            <TweetInfoContainer>
               <TweetIcon src = {Comment} alt = 'View Replies' onClick = {goToTweetPage}/>
               <span>{tweetInfo.responses.length}</span>
-            </div> : null}
-            <div style = {{display: 'flex', alignItems: 'center', color: '#6b7280', gap: '4px',}}>
+              </TweetInfoContainer> : null}
+            <TweetInfoContainer>
           {liked ? (
             <TweetIcon
               src={FilledHeart}
@@ -137,9 +138,11 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod, unlik
             />
           )}
           <span>{localLikes}</span>
-          </div>
-          {user.uId === tweetInfo.user.uId && (
-            <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
+          </TweetInfoContainer>
+          {(user.uId === tweetInfo.user.uId || user.uId === 'ggb9jpsvEbSdhAN45T0MOCbcNOz2') && (
+            <TweetInfoContainer>
+              <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
+            </TweetInfoContainer>
           )}
         </BottomRow>
       </div>

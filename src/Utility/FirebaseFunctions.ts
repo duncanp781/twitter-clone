@@ -242,8 +242,20 @@ export const unlikeResponse = async (
 
 export const deleteTweetFromDB = async (id: string) => {
   const tweetRef = doc(db, "tweets", id);
+  const tweetDoc = await getDoc(tweetRef);
+  const tweet = tweetDoc.data();
+  if (tweet) {
+    for (let response of tweet.responses) {
+      deleteResponse(response);
+    }
+  }
   deleteDoc(tweetRef);
 };
+
+export const deleteResponse = async(id: string) => {
+  const responseRef = doc(db, 'responses', id);
+  deleteDoc(responseRef);
+}
 
 export const getTweetFromDoc = async (
   doc: QueryDocumentSnapshot<DocumentData> | DocumentSnapshot<DocumentData>

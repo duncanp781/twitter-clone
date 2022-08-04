@@ -45,6 +45,7 @@ function SingleTweet({ tweetInfo, unlikeLocal }: Props) {
   }, [tweetInfo.user, triedLoad]);
 
   const remove = () => {
+    navigate(-1);
     deleteTweetFromDB(tweetInfo.id);
   };
 

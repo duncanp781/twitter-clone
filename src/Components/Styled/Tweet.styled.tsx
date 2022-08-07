@@ -8,7 +8,7 @@ type Props = {
 
 export const UserName = styled.span<Props>`
 height: fit-content;
-  overflow-x: hidden;
+  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-weight: bold;

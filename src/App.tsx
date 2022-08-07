@@ -25,9 +25,11 @@ import { TweetInfo } from "./Pages/Feed";
 // Add max length for usernames /@s  bios
 // DONE: Fix infinite like glitch (replicated by liking/unliking then switching pages)
 // DONE: Fix text overflow on tweets/usernames (add ellipsis - css tricks article)
-// Fix image on login page - probably just remove? it slows it down a lot
+// DONE: Fix image on login page - probably just remove? it slows it down a lot
 // DONE: Add Proper deleting on single tweet pages - navigate back a page
 // DONE: Add deleting responses to tweets when deleting tweets
+// Add More Semantic HTML
+//Fix Redirecting to feed if logged in
 
 // Possibilites:
 // Small:

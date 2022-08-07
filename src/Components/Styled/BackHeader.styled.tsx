@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { lightTheme } from "./Themes";
 
-export const BackHeaderStyled = styled.div`
+export const BackHeaderStyled = styled.header`
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -17,7 +17,9 @@ export const BackHeaderStyled = styled.div`
   background-color: rgb(255, 255, 255, 0.95);
 `;
 
-export const BackIcon = styled.div`
+export const BackIcon = styled.button`
+  background: none;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: center;

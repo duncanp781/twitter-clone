@@ -8,6 +8,7 @@ import {
 } from "../Utility/FirebaseFunctions";
 import Modal from "./Modal";
 import { Button } from "./Styled/Button.styled";
+import { lightTheme } from "./Styled/Themes";
 import { TweetField } from "./Styled/Tweet.styled";
 import TextInput from "./TextInput";
 
@@ -81,14 +82,18 @@ export default function EditProfile({ close, update }: Props) {
           id="userName"
           text="Enter your username:"
           defaultVal={user.userName}
+          maxlength={30}
         />
-        <TextInput id="userAt" text="Enter your at:" defaultVal={user.userAt} />
+        <TextInput id="userAt" text="Enter your at:" defaultVal={user.userAt} 
+        maxlength = {30}/>
         <label htmlFor="userBio">Enter your bio:</label>
         <TweetField
           id="userBio"
           name="userBio"
           defaultValue={user.info?.bio}
           placeholder="Write a little about yourself"
+          style = {{border: `2px solid ${lightTheme.dark}`}}
+          maxLength={250}
         ></TweetField>
         <label htmlFor="userProPic">
           Upload a profile picture: (Max Size 3MB)

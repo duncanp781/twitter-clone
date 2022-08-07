@@ -5,7 +5,7 @@ type Props = {
   hoverable?: boolean;
 };
 
-export const HeaderStyled = styled.div`
+export const HeaderStyled = styled.nav`
   position: sticky;
   top: 0;
   align-self: flex-start;
@@ -49,6 +49,7 @@ export const Logo = styled.span`
 
 
 export const SidebarContainer = styled.div<Props>`
+  max-width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,6 +83,8 @@ export const SidebarButton = styled.button`
 export const UserInfoStyled = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  text-overflow: ellipsis;
   gap: 4px;
 `;
 

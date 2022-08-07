@@ -74,7 +74,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod, unlik
       <ProPicContainer>
         <ProPic src={proPic} alt={"profile"} />
       </ProPicContainer>
-      <div style={{ display: "flex", flexDirection: "column", overflowWrap: 'break-word', maxWidth: '100%', overflow: 'hidden',}}>
+      <div style={{ display: "flex", flexDirection: "column", overflowWrap: 'break-word', maxWidth: '100%', overflow: 'hidden', height: 'fit-content',}}>
         <TweetHead
           onClick={(e) => {
             if (e.target === e.currentTarget) {

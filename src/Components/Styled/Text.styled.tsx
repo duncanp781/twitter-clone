@@ -4,6 +4,7 @@ type Props = {
   italic?: boolean
 }
 export const SubtitleText = styled.span<Props>`
+height: fit-content;
 overflow: hidden;
 text-overflow: ellipsis;
   color: #6b7280;

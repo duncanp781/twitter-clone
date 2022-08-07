@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Subtitle } from "../Components/Styled/Login.styled";
 import { Button } from "../Components/Styled/Button.styled";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ import TwitterLogo from '../img/Twitter-logo.svg'
 
 export default function LogIn() {
   const user = useContext(UserContext);
+  const [canRedir, setCanRedir] = useState(true);
   const triggerUpdate = useContext(TriggerUserUpdate);
   const [showAddInfo, setShowAddInfo] = useState(false);
   const navigate = useNavigate();
@@ -29,6 +30,12 @@ export default function LogIn() {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (user.uId !== '1' && canRedir){
+      navigate('/feed')
+    }
+  }, [user, canRedir, navigate])
 
   return (
     <Page style = {{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px',}}> 
@@ -63,8 +70,8 @@ export default function LogIn() {
             navigate("/feed");
           }}
         >
-          <TextInput id="userName" text="Enter your username:" />
-          <TextInput id="userAt" text="Enter your at:" />
+          <TextInput maxlength={30} id="userName" text="Enter your username:" />
+          <TextInput maxlength = {30} id="userAt" text="Enter your at:" />
           <Button>Submit</Button>
         </form>
       ) : (

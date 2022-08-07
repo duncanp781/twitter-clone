@@ -1,8 +1,6 @@
-import React from 'react'
 import { BackHeaderStyled, BackIcon } from './Styled/BackHeader.styled'
 import Back from '../img/back.svg';
 import { useNavigate } from 'react-router';
-import { SidebarContainer } from './Styled/Header.styled';
 import { TweetIcon } from './Styled/Tweet.styled';
 
 type Props = {

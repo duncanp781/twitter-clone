@@ -6,9 +6,10 @@ type Props = {
   text: string;
   placeholder?: string;
   defaultVal?: string;
+  maxlength? : number;
 };
 
-function TextInput({ id, text, placeholder, defaultVal }: Props) {
+function TextInput({ id, text, placeholder, defaultVal, maxlength = 30 }: Props) {
   return (
     <div
       style={{
@@ -25,6 +26,7 @@ function TextInput({ id, text, placeholder, defaultVal }: Props) {
         placeholder={placeholder}
         defaultValue={defaultVal}
         name={id}
+        maxLength = {maxlength}
       />
     </div>
   );

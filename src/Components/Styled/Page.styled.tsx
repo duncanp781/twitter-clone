@@ -3,7 +3,7 @@ import React from 'react'
 import { lightTheme } from './Themes';
 
 
-export const Page = styled.div`
+export const Page = styled.main`
 width: 100%;
 max-width: 40vw;
 min-width: 500px;

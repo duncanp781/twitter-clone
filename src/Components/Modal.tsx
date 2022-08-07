@@ -11,7 +11,7 @@ type Props = {
 export default function Modal({ children, close }: Props) {
   return (
     <ModalScreenStyled
-      onClick={(e) => {
+      onMouseDown={(e) => {
         if (e.target === e.currentTarget) {
           close();
         }

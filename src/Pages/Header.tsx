@@ -94,7 +94,7 @@ function Header({ signOut, hasUser, setExtraTweet }: Props) {
             </Button>
           </SidebarContainer>
         </div>
-        <div>
+        <div style = {{maxWidth: '100%',}}>
           <SidebarContainer
             onClick={(e) => {
               if (e.target === e.currentTarget) {
@@ -108,6 +108,7 @@ function Header({ signOut, hasUser, setExtraTweet }: Props) {
               onClick={() => {
                 navigate("/user/" + user.uId);
               }}
+              style = {{flex: 'none',}}
             >
               <ProPic src={user.info.img} alt="Profile" />
             </ProPicContainer>
@@ -125,7 +126,7 @@ function Header({ signOut, hasUser, setExtraTweet }: Props) {
               }}>@{user.userAt}</SubtitleText>
             </UserInfoStyled>
             {hasUser ? (
-              <Button style={{ padding: "12px" }} onClick={signOut}>
+              <Button style={{ padding: "12px"}} onClick={signOut}>
                 Sign out
               </Button>
             ) : (
@@ -133,7 +134,7 @@ function Header({ signOut, hasUser, setExtraTweet }: Props) {
                 onClick={() => {
                   navigate("/");
                 }}
-                style={{ padding: "12px" }}
+                style={{ padding: "12px"}}
               >
                 Sign in
               </Button>

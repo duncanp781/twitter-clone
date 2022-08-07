@@ -17,7 +17,7 @@ export const Box = styled.div<Props>`
   }
 `
 
-export const TweetStyled = styled.div<Props>`
+export const TweetStyled = styled.article<Props>`
 overflow-wrap: break-word;
 overflow: hidden;
 width: 100%;

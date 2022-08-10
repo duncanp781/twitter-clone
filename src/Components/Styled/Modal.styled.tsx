@@ -3,7 +3,7 @@ import { lightTheme } from './Themes';
 
 
 export const ModalScreenStyled = styled.div`
-  z-index: 1;
+  z-index: 2;
   position: fixed;
   top: 0;
   left: 0;

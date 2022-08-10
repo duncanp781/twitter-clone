@@ -18,6 +18,25 @@ export const HeaderStyled = styled.nav`
   justify-content: space-between;
   align-items: center;
   border-left: 2px solid ${lightTheme.secondary};
+  @media (max-width: 799px) {
+    display: none;
+  }
+`;
+
+export const BurgerStyled = styled.nav`
+background-color: white;
+  position: relative;
+  top: 0;
+  right: calc(-100% + 300px);
+  height: 100vh;
+  max-width: 20%;
+  min-width: 300px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 2px solid ${lightTheme.secondary};
 `;
 
 export const logoJump = keyframes`
@@ -29,13 +48,11 @@ export const logoJump = keyframes`
     transform: rotate(20deg);
   }
 
-`
+`;
 
 export const Logo = styled.span`
   font-weight: bold;
   font-size: 1.6rem;
-
-
 
   &:hover {
     cursor: pointer;
@@ -45,8 +62,6 @@ export const Logo = styled.span`
     animation-iteration-count: 1;
   }
 `;
-
-
 
 export const SidebarContainer = styled.div<Props>`
   max-width: 100%;

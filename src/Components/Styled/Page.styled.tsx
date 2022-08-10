@@ -11,5 +11,9 @@ height: 100%;
 min-height: 100vh;
 border-right: 2px solid ${lightTheme.secondary};
 border-left: 2px solid ${lightTheme.secondary};
+@media (max-width: 799px){
+  max-width: 100%;
+  min-width: 0px;
+}
 `
 

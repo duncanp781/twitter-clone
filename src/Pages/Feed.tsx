@@ -12,6 +12,7 @@ import {
 import { FeedStyled } from "../Components/Styled/Feed.styled";
 import TweetDisplay from "../Components/TweetDisplay";
 import { BackHeaderStyled } from "../Components/Styled/BackHeader.styled";
+import BackHeader from "../Components/BackHeader";
 
 export type TweetInfo = {
   user: User;
@@ -33,9 +34,9 @@ function Feed() {
 
   return (
     <Page>
-      <BackHeaderStyled>
-        <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Home</span>
-      </BackHeaderStyled>
+      <BackHeader showBack = {false}>
+      <span style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Home</span>
+      </BackHeader>
       <FeedStyled>
         <NewTweet
           submit={async (tweetContent: string) => {

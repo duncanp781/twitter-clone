@@ -13,10 +13,7 @@ import {
 import BlankProfile from "./img/blank-profile.webp";
 import { AppStyled } from "./Components/Styled/App.styled";
 import { TweetInfo } from "./Pages/Feed";
-
-
-
-
+import BurgerMenu from "./Pages/BurgerMenu";
 
 // TODO:
 // DONE: Make the tweet post modal also update local tweets
@@ -36,7 +33,7 @@ import { TweetInfo } from "./Pages/Feed";
 // Rework trash to be in triple dots in top left of tweet
 // Rework date format
 // Add animation on hover for styled components (buttons, icons etc.)
-// Big:  
+// Big:
 // Add Following
 // Add Banner Images
 // Add hover preview for profiles
@@ -55,9 +52,8 @@ export type UserDetails = {
   bio?: string;
   website?: string;
   img: string;
-  hasImg?: boolean
+  hasImg?: boolean;
 };
-
 
 export const defaultUser: User = {
   userName: "guest",
@@ -73,11 +69,14 @@ export const UserContext = React.createContext<User>(defaultUser);
 
 export const ExtraTweetContext = React.createContext<TweetInfo[]>([]);
 
+export const setShowHamContext = React.createContext((state: boolean) => {});
+
 export default function App() {
   const [showHeader, setShowHeader] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = useState<User>(defaultUser);
   const [gotAuth, setGotAuth] = useState(false);
   const [extraTweet, setExtraTweet] = useState<TweetInfo[]>([]);
+  const [showHam, setShowHam] = useState(false);
 
   const updateUser = async () => {
     let realUser = await getUserFromDB(currentUser.uId);
@@ -86,55 +85,64 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
-  }, [currentUser]);
+  useEffect(() => {}, [currentUser]);
 
   useEffect(() => {
-    
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if(!gotAuth){
-      if (user) {
-        //If there is an account signed in, check if it is an existing user.
-        //If not, add unknown information
-        getUserFromDB(user.uid).then((userObj) => {
-          if (userObj) {
-            setCurrentUser(userObj);
-          } else {
-            let unknownUser: User = {
-              uId: user.uid,
-              userName: "unknown",
-              userAt: "unknown",
-              info: {
-                img: BlankProfile,
-              },
-            };
-            addUserToDB(unknownUser);
-            setCurrentUser(unknownUser);
-          }
-        });
-      } else {
-        //If not signed in add guest information
-        setCurrentUser(defaultUser);
+      if (!gotAuth) {
+        if (user) {
+          //If there is an account signed in, check if it is an existing user.
+          //If not, add unknown information
+          getUserFromDB(user.uid).then((userObj) => {
+            if (userObj) {
+              setCurrentUser(userObj);
+            } else {
+              let unknownUser: User = {
+                uId: user.uid,
+                userName: "unknown",
+                userAt: "unknown",
+                info: {
+                  img: BlankProfile,
+                },
+              };
+              addUserToDB(unknownUser);
+              setCurrentUser(unknownUser);
+            }
+          });
+        } else {
+          //If not signed in add guest information
+          setCurrentUser(defaultUser);
+        }
+        setGotAuth(true);
+        return unsubscribe;
       }
-      setGotAuth(true);
-      return unsubscribe;
-    }
-    })
+    });
   }, [gotAuth]);
 
   return (
     <AppStyled>
-      <ExtraTweetContext.Provider value = {extraTweet}>
-      <TriggerUserUpdate.Provider value={updateUser}>
-        <UserContext.Provider value={currentUser ? currentUser : defaultUser}>
-          <BrowserRouter >
-            {showHeader && (
-              <Header signOut={signOutUser} hasUser={currentUser.uId !== "1"} setExtraTweet = {setExtraTweet}/>
-            )}
-            <RouteSwitch setShowHeader={setShowHeader} />
-          </BrowserRouter>
-        </UserContext.Provider>
-      </TriggerUserUpdate.Provider>
+      <ExtraTweetContext.Provider value={extraTweet}>
+        <TriggerUserUpdate.Provider value={updateUser}>
+          <UserContext.Provider value={currentUser ? currentUser : defaultUser}>
+            <setShowHamContext.Provider value={setShowHam}>
+              <BrowserRouter>
+                {showHeader && (
+                  <Header
+                    signOut={signOutUser}
+                    hasUser={currentUser.uId !== "1"}
+                    setExtraTweet={setExtraTweet}
+                  />
+                )}
+                {showHam && (
+                  <BurgerMenu signOut = {signOutUser}
+                  hasUser={currentUser.uId !== "1"}
+                    setExtraTweet={setExtraTweet}/>
+                )}
+                <RouteSwitch setShowHeader={setShowHeader} />
+              </BrowserRouter>
+            </setShowHamContext.Provider>
+          </UserContext.Provider>
+        </TriggerUserUpdate.Provider>
       </ExtraTweetContext.Provider>
     </AppStyled>
   );

@@ -53,6 +53,7 @@ export type UserDetails = {
   website?: string;
   img: string;
   hasImg?: boolean;
+  admin?: boolean;
 };
 
 export const defaultUser: User = {

@@ -139,7 +139,7 @@ function Tweet({ tweetInfo, removeTweetFromFeed, likeMethod, unlikeMethod, unlik
           )}
           <span>{localLikes}</span>
           </TweetInfoContainer>
-          {(user.uId === tweetInfo.user.uId || user.uId === 'ggb9jpsvEbSdhAN45T0MOCbcNOz2') && (
+          {(user.uId === tweetInfo.user.uId || user.info.admin) && (
             <TweetInfoContainer>
               <TweetIcon src={Trash} alt="Delete Tweet" onClick={remove} />
             </TweetInfoContainer>

@@ -1,4 +1,4 @@
-#Twitter Clone
+# Twitter Clone
 This is a project aiming to imitate Twitter. 
 It is currently hosted at https://twitter-clone-f9ccd.web.app. 
 It has many of the core features of Twitter including creating, deleting, liking, and responding to tweets, as well as viewing user's profiles. 
